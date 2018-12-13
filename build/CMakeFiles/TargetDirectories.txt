@@ -1,3 +1,0 @@
-/home/nroman/Desktop/desktop-streamer-frontend/build/CMakeFiles/rebuild_cache.dir
-/home/nroman/Desktop/desktop-streamer-frontend/build/CMakeFiles/edit_cache.dir
-/home/nroman/Desktop/desktop-streamer-frontend/build/CMakeFiles/rr-frontend-server.dir

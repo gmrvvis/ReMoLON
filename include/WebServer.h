@@ -19,6 +19,10 @@ namespace rrfrontend
 
 	class WebServer : public Poco::Util::ServerApplication
 	{
+	private:
+		unsigned int port;
+	public:
+		WebServer(unsigned int port);
 	protected:
 		int main(const std::vector<std::string> &);
 	};
