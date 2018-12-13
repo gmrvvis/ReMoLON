@@ -23,6 +23,12 @@ namespace rrfrontend
 
 	// ======================================================
 
+	WebServer::WebServer(unsigned int port)
+		: Poco::Util::ServerApplication()
+		,	port(port)
+	{
+	}
+
   int WebServer::main(const std::vector<std::string> &)
   {
 		RequestManager::getInstance().registerActionHandler<DefaultActionHandler>();
@@ -30,7 +36,7 @@ namespace rrfrontend
 		RequestManager::getInstance().registerActionHandler<SessionListActionHandler>();
 		RequestManager::getInstance().registerActionHandler<CreateSessionActionHandler>();
 
-    Poco::Net::HTTPServer s(new RequestHandlerFactory(), Poco::Net::ServerSocket(7777), new Poco::Net::HTTPServerParams);
+    Poco::Net::HTTPServer s(new RequestHandlerFactory(), Poco::Net::ServerSocket(port), new Poco::Net::HTTPServerParams);
 
     s.start();
     std::cout << std::endl << "RR Frontend Server started" << std::endl;
