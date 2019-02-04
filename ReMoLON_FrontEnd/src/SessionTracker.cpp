@@ -1,0 +1,165 @@
+#include "SessionTracker.h"
+
+#include <iostream>
+
+#include "VisualizationNodeManager.h"
+#include "UserManager.h"
+#include "serverpackets/RequestStartStreamingSession.h"
+#include "serverpackets/RequestCloseUserSession.h"
+
+namespace remolonFrontend
+{
+  SessionTracker SessionTracker::_INSTANCE;
+
+  SessionTracker & SessionTracker::getInstance ( )
+  {
+    return _INSTANCE;
+  }
+
+  SessionCreationResult SessionTracker::tryCreateSession ( User & user_, 
+                                                           const std::string & sessionName_,
+                                                           streamingSessionInfo * result_ )
+  {
+    std::unique_lock < std::mutex > lock ( user_.getUserLock ( ) );
+
+    // Check for duplicateNames
+    auto it = _openSessions.find ( user_.getUserName ( ) );
+    if ( it != _openSessions.end ( ) )
+    {
+      sessionList & userSessions = it->second;
+      auto innerIt = userSessions.find ( sessionName_ );
+      if ( innerIt != userSessions.end ( ) )
+      {
+        std::cout << "Creation failed due to duplicate name" << std::endl;
+        return SessionCreationResult::CREATION_FAIL_DUPLICATE_NAME;
+      }
+    }
+
+    // Try to find a suitable node (max 20 attempts)
+    bool slotReserved = false;
+    unsigned int choosenPort = 0;
+
+    const int maxAttempts = 20;
+    int attempt = 0;
+
+    VisualizationNode * node = nullptr;
+
+    do
+    {
+      node = VisualizationNodeManager::getInstance ( ).findBestNode ( );
+
+      if ( node == nullptr )
+      {
+        return SessionCreationResult::CREATION_FAIL_NO_AVAILABLE_NODES;
+      }  
+      slotReserved = node->tryReserveSlot ( choosenPort );
+    } 
+    while ( ( node == nullptr  || !slotReserved ) && attempt < maxAttempts );
+
+    // No available node found
+    if ( !slotReserved )
+    {
+      std::cout << "Creation failed no available nodes" << std::endl;
+      return SessionCreationResult::CREATION_FAIL_NO_AVAILABLE_NODES;
+    }
+
+    std::cout << "First stage creation. Choosen node: " << node->getAddress ( ) << " in port " << choosenPort << std::endl;
+
+    sessionList & userSessionList = _openSessions [ user_.getUserName ( ) ];
+    streamingSessionInfo & sessionInfo = userSessionList [ sessionName_ ];
+    sessionInfo._sessionName = sessionName_;
+    sessionInfo._nodeAddress = node->getAddress ( );
+    sessionInfo._nodePort = choosenPort;
+    sessionInfo._ownerIp = user_.getAddress ( );
+    sessionInfo._ownerUsername = user_.getUserName ( );
+    sessionInfo._status = SessionStatus::SESSION_CREATING;
+
+    result_ = &sessionInfo;
+
+    remolonUtil::SendablePacketPtr 
+    startPacket = std::make_unique < serverpackets::RequestStartStreamingSession > ( user_,
+                                                                                     sessionName_,
+                                                                                     choosenPort );
+
+    node->sendPacket ( startPacket );
+
+    user_.addSession ( sessionName_, sessionInfo._nodeAddress );
+
+    return SessionCreationResult::CREATION_OK;
+  }
+
+  void SessionTracker::createSession ( User & usr_, const std::string & sessionName_, int status_ )
+  {
+    std::unique_lock < std::mutex > lock ( usr_.getUserLock ( ) );
+
+    streamingSessionInfo * info = getSessionInfo ( usr_, sessionName_ );
+    if ( info != nullptr )
+    {
+      info->_status = status_ == 0? SessionStatus::SESSION_RUNNING : SessionStatus::SESSION_CRASHED;
+    }
+  }
+
+  void SessionTracker::tryFinishSession ( User & user_, 
+                                          const std::string & sessionName_ )
+  {
+    std::unique_lock < std::mutex > lock ( user_.getUserLock ( ) );
+
+    streamingSessionInfo * info = getSessionInfo ( user_, sessionName_ );
+    if ( info != nullptr )
+    {
+      info->_status = SessionStatus::SESSION_CLOSING;
+      VisualizationNode * node = VisualizationNodeManager::getInstance ( ).getNode ( info->_nodeAddress );
+
+      // We cannot contact the node, delete the session history
+      if ( node == nullptr )
+      {
+        finishSession ( user_, sessionName_ );
+      }
+      else
+      {
+        remolonUtil::SendablePacketPtr 
+        closeSession = std::make_unique < serverpackets::RequestCloseUserSession > ( user_.getUserName ( ), 
+                                                                                          sessionName_ );
+        node->sendPacket ( closeSession );
+      }
+    }
+  }
+
+  void SessionTracker::finishSession ( User & user_,
+                                       const std::string & sessionName_ )
+  {
+    auto it = _openSessions.find ( user_.getUserName ( ) );
+    if ( it != _openSessions.end ( ) )
+    {
+      auto innerIt = it->second.find ( sessionName_ );
+      if ( innerIt != it->second.end ( ) )
+      {
+        it->second.erase ( innerIt );
+        user_.removeSession ( sessionName_ );
+      }
+    }
+  }
+
+  streamingSessionInfo * SessionTracker::getSessionInfo ( User & user_,
+                                                          const std::string & sessionName_ )
+  {
+    auto it = _openSessions.find ( user_.getUserName ( ) );
+    if ( it != _openSessions.end ( ) )
+    {
+      auto innerIt = it->second.find ( sessionName_ );
+      if ( innerIt != it->second.end ( ) )
+      {
+        return &(innerIt->second);
+      }
+    }
+
+    return nullptr;
+  }
+
+  const std::unordered_map < std::string, streamingSessionInfo > & SessionTracker::getUserSessions ( User & user_ )
+  {
+    sessionList & list = _openSessions [ user_.getUserName ( ) ];
+    
+    return list;
+  }
+}
