@@ -15,7 +15,8 @@ namespace remolonFrontend
 		{
 			xml += "<session>";
 			xml += "<name>" + it->first + "</name>";
-			xml += "<url>http://" + it->second._nodeAddress + ":" + std::to_string ( it->second._nodePort ) + "/index.html</url>";
+			xml += "<url>http://" + it->second._nodePublicAddress + ":" + std::to_string ( it->second._nodePort ) + "/index.html</url>";
+      xml += "<status>" + std::to_string ((int) it->second._status ) + "</status>";
 			xml += "</session>";
 		}
 

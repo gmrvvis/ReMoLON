@@ -16,9 +16,19 @@ namespace remolonFrontend
     }
   }
 
+  void VisualizationNode::setPublicAddress ( const std::string & publicAddress_ )
+  {
+    _publicAddress = publicAddress_;
+  }
+
   const std::string & VisualizationNode::getAddress ( )
   {
     return _address; 
+  }
+
+  const std::string & VisualizationNode::getPublicAddress ( )
+  {
+    return _publicAddress;
   }
 
   unsigned int VisualizationNode::getStreamSlotsCount ( )

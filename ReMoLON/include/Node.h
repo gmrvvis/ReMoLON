@@ -20,8 +20,6 @@ namespace remolon
       remolonUtil::SecureClient & getFrontendClient ( );
       remolonUtil::SecureServer & getNodeServer ( );
 
-      void sendNodeInfo ( );
-
     private:
       static Node _INSTANCE;
 

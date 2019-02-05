@@ -1,6 +1,7 @@
 #include "VisualizationNodeManager.h"
 
 #include <vector>
+#include <iostream>
 
 namespace remolonFrontend
 {
@@ -20,7 +21,8 @@ namespace remolonFrontend
 
   VisualizationNode * VisualizationNodeManager::registerOrGetNode ( remolonUtil::Connection * con_ )
   {
-    std::string address = con_->peerAddress ( ).toString ( );
+    std::string address = con_->peerAddress ( ).host ( ).toString ( );
+    
     VisualizationNode * node = getNode ( address );
     if ( node != nullptr )
     {

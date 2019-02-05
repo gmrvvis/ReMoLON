@@ -38,6 +38,9 @@ namespace remolon
     cPtr->connect ( );
 
     // Initialize server
+    std::string publicAddr = clientCfg.getProperty ( "publicAddress" );
+    SessionManager::getInstance ( ).setPublicAddress ( publicAddr );
+
     std::vector < std::string > availablePorts = clientCfg.getPropertyList ( "availablePorts", "," );
     for ( auto & str : availablePorts )
     {
@@ -62,10 +65,5 @@ namespace remolon
   remolonUtil::SecureServer & Node::getNodeServer ( )
   {
     return *( _server.get ( ) );
-  }
-
-  void Node::sendNodeInfo ( )
-  {
-
   }
 }

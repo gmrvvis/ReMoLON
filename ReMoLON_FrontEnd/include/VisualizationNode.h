@@ -17,8 +17,10 @@ namespace remolonFrontend
       VisualizationNode ( );
 
       void setConnection ( remolonUtil::Connection * con_ );
+      void setPublicAddress ( const std::string & publicAddress_ );
 
       const std::string & getAddress ( );
+      const std::string & getPublicAddress ( );
 
       unsigned int getStreamSlotsCount ( );
       unsigned int getAvailableStreamSlotsCount ( );
@@ -37,6 +39,7 @@ namespace remolonFrontend
     private:
       remolonUtil::Connection * _con;
       std::string _address;
+      std::string _publicAddress;
       unsigned int _totalSlots;
       unsigned int _usedSlots;
 

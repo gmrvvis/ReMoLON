@@ -13,6 +13,9 @@ namespace remolon
 
     void NodeInfo::writeImpl ( )
     {
+      const std::string & address = SessionManager::getInstance ( ).getPublicAddress ( );
+      writeString ( address );
+
       const std::unordered_map < uint16_t, bool > & 
       portList = SessionManager::getInstance ( ).getPortList ( );
 

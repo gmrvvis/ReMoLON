@@ -24,6 +24,7 @@ namespace remolonFrontend
     std::string _ownerIp;
     std::string _ownerUsername;
     std::string _nodeAddress;
+    std::string _nodePublicAddress;
     unsigned int _nodePort;
     SessionStatus _status;
 

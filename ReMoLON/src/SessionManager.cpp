@@ -14,6 +14,11 @@ namespace remolon
     return _INSTANCE;
   }
 
+  void SessionManager::setPublicAddress ( const std::string & address_ )
+  {
+    _publicAddress = address_;
+  }
+
   void SessionManager::addAvailablePort ( uint16_t port_ )
   {
     _usedPorts [ port_ ] = false;
@@ -79,6 +84,11 @@ namespace remolon
     
     std::cout << "Sending answer to frontend" << std::endl;
     client.sendPacket ( result );
+  }
+
+  const std::string & SessionManager::getPublicAddress ( )
+  {
+    return _publicAddress;
   }
 
   const std::unordered_map < uint16_t, bool > & SessionManager::getPortList ( )

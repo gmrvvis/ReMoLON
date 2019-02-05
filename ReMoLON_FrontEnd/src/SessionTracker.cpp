@@ -69,6 +69,7 @@ namespace remolonFrontend
     streamingSessionInfo & sessionInfo = userSessionList [ sessionName_ ];
     sessionInfo._sessionName = sessionName_;
     sessionInfo._nodeAddress = node->getAddress ( );
+    sessionInfo._nodePublicAddress = node->getPublicAddress ( );
     sessionInfo._nodePort = choosenPort;
     sessionInfo._ownerIp = user_.getAddress ( );
     sessionInfo._ownerUsername = user_.getUserName ( );

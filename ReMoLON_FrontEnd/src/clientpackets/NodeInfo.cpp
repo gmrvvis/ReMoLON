@@ -16,6 +16,9 @@ namespace remolonFrontend
     {
       VisualizationNode * node = VisualizationNodeManager::getInstance ( ).registerOrGetNode ( getConnection ( ) );
 
+      std::string publicAddr = readString ( );
+      node->setPublicAddress ( publicAddr );
+
       const int totalSlots = readInt ( );
       node->setTotalSlots ( totalSlots );
 

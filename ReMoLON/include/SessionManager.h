@@ -20,6 +20,7 @@ namespace remolon
     public:
       static SessionManager & getInstance ( );
 
+      void setPublicAddress ( const std::string & address_ );
       void addAvailablePort ( uint16_t port );
 
       void startNewSession ( const std::string & ownerName_,
@@ -33,11 +34,13 @@ namespace remolon
       StreamingSession * getStreamSession ( const std::string & owernName_,
                                             const std::string & sessionName_ );
 
+      const std::string & getPublicAddress ( );
       const std::unordered_map < uint16_t, bool > & getPortList ( );
 
     private:
       static SessionManager _INSTANCE;
 
+      std::string _publicAddress;
       std::mutex _mtx;
       std::unordered_map < uint16_t, bool > _usedPorts;
       std::unordered_map < std::string, sessionList > _streamSessions;  

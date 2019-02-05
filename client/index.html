@@ -72,12 +72,29 @@
 		<script>
 			function clearSessionTable()
 			{
-				var defaultContent = "<col width=\"40px\" /><col width=\"80px\" /><col width=\"40px\" />";
+				var defaultContent = "<col width=\"40px\" /><col width=\"40px\" /><col width=\"80px\" /><col width=\"40px\" />";
 				defaultContent += "<tr class=\"heading\">";
-				defaultContent += "<th>Session</th><th></th><th class=\"end\"><button type=\"button\" onclick=\"refreshSessionList()\" id=\"refresh_button\">Refresh session list</button></th>";
+				defaultContent += "<th>Session</th><th>Status</th><th></th><th class=\"end\"><button type=\"button\" onclick=\"refreshSessionList()\" id=\"refresh_button\">Refresh session list</button></th>";
 				defaultContent +=	"</tr>";
 				document.getElementById("session_list").innerHTML = defaultContent;
 			}
+
+      function getStatusString(statusNumber)
+      {
+        switch(statusNumber)
+        {
+          case "0":
+            return "<font color=\"#b4abaa\">Unitialized</font>";
+          case "1":
+            return "<font color=\"#14a5d4\">Creating...</font>";
+          case "2":
+            return "<font color=\"#34aa74\">Running</font>";
+          case "3":
+            return "<font color=\"#b59329\">Finished</font>";
+          case "4":
+            return "<font color=\"#ff0000\">Crashed</font>";
+        }
+      }
 
 			function refreshSessionList() 
 			{
@@ -93,13 +110,23 @@
 						var sessions = this.responseXML.getElementsByTagName("session");
 						for (var i = 0; i < sessions.length; i++) 
 						{
-							var name = sessions[i].getElementsByTagName("name")[0].childNodes[0].nodeValue
-							var url = sessions[i].getElementsByTagName("url")[0].childNodes[0].nodeValue
-							
+							var name = sessions[i].getElementsByTagName("name")[0].childNodes[0].nodeValue;
+							var url = sessions[i].getElementsByTagName("url")[0].childNodes[0].nodeValue;
+              var status = sessions[i].getElementsByTagName("status")[0].childNodes[0].nodeValue;
+							var statusString = getStatusString(status);
+
 							content += "<tr>"
 							content += "<td>" + name + "</td>";
-							content += "<td class=\"end\"><button type=\"button\" onclick=\"openStreamingSession('"+url+"')\">Open session</button></td>";
-							content += "<td class=\"end\"><button type=\"button\" onclick=\"destroyStreamingSession('"+name+"')\">Destroy session</button></td>";
+              content += "<td>" + statusString + "</td>";
+              if(status < 3)
+              {
+							  content += "<td><button type=\"button\" onclick=\"openStreamingSession('"+url+"')\">Open session</button></td>";
+							  content += "<td class=\"end\"><button type=\"button\" onclick=\"destroyStreamingSession('"+name+"')\">Destroy session</button></td>";
+              }
+              else
+              {
+                content +="<td></td><td></td>";
+              }
 							content += "</tr>";
 						}
 
@@ -176,12 +203,14 @@
 			<h2>Remote rendering streaming session management</h2>
 			<div>
 				<table id="session_list" cellspacing="0" cellpadding="0">
-					<col width="40px" />
-		  		<col width="80px" />
+          <col width="40px" />
+          <col width="40px" />
+          <col width="80px" />
 		  		<col width="40px" />
 					<tr class="heading">
 						<th>Session</th>
-						<th></th>
+            <th>Status</th>
+            <th></th>
 						<th class="end"><button type="button" onclick="refreshSessionList()" id="refresh_button">Refresh session list</button></th>
 					</tr>
 				<table>
