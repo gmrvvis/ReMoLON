@@ -67,3 +67,9 @@ list(APPEND REMOLON_UTIL_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
 target_include_directories(remolonutil PUBLIC ${REMOLON_UTIL_INCLUDES})
 target_link_libraries(remolonutil ${REMOLON_UTIL_LIBS})
+
+configure_file(
+  ${PROJECT_SOURCE_DIR}/cmake/remolonutil-config.cmake.in
+  "${PROJECT_BINARY_DIR}/remolonutil-config.cmake" @ONLY)
+export(TARGETS remolonutil
+  FILE "${PROJECT_BINARY_DIR}/remolonutil-targets.cmake")

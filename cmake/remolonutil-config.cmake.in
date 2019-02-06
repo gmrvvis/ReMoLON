@@ -1,0 +1,11 @@
+get_filename_component(REMOLONUTIL_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(REMOLONUTIL_INCLUDE_DIRS @CMAKE_CURRENT_SOURCE_DIR@/ReMoLON_Util/include)
+set(REMOLONUTIL_LIB_DIRS @CMAKE_CURRENT_BINARY_DIR@/ReMoLON_Util)
+ 
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET remolonutil)
+  include("${REMOLONUTIL_CMAKE_DIR}/remolonutil-targets.cmake")
+endif()
+ 
+# These are IMPORTED targets created by remolonutil-targets.cmake
+set(REMOLONUTIL_LIBRARIES remolonutil)
