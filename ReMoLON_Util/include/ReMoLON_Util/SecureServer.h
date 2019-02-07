@@ -31,7 +31,7 @@ namespace remolonUtil
                 
       ~SecureServer ( );
 
-      void start ( );
+      void start ( bool blocking_ = false );
                 
       void acceptLoop ( );
 
@@ -59,6 +59,7 @@ namespace remolonUtil
       std::string _caFilePath;
 
       bool _active;
+      bool _blocking;
 
       std::thread _acceptorThread;
       std::vector < SelectorThreadPtr > _selectorWorkers;

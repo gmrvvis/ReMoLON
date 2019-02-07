@@ -6,7 +6,7 @@ namespace remolon
   {
     char AllowAddressAnswer::getOpcode ( )
     {
-      return 0x00;
+      return 0x01;
     }
 
     void AllowAddressAnswer::readImpl ( )

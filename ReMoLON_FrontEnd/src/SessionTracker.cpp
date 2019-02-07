@@ -30,7 +30,6 @@ namespace remolonFrontend
       auto innerIt = userSessions.find ( sessionName_ );
       if ( innerIt != userSessions.end ( ) )
       {
-        std::cout << "Creation failed due to duplicate name" << std::endl;
         return SessionCreationResult::CREATION_FAIL_DUPLICATE_NAME;
       }
     }
@@ -59,11 +58,8 @@ namespace remolonFrontend
     // No available node found
     if ( !slotReserved )
     {
-      std::cout << "Creation failed no available nodes" << std::endl;
       return SessionCreationResult::CREATION_FAIL_NO_AVAILABLE_NODES;
     }
-
-    std::cout << "First stage creation. Choosen node: " << node->getAddress ( ) << " in port " << choosenPort << std::endl;
 
     sessionList & userSessionList = _openSessions [ user_.getUserName ( ) ];
     streamingSessionInfo & sessionInfo = userSessionList [ sessionName_ ];

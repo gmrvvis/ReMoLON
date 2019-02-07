@@ -14,6 +14,8 @@ namespace remolonUtil
   class Packet : public Runnable
   {
     public:
+      virtual ~Packet ( ) = default;
+
       void setConnection ( Connection * con_ );
       Connection * getConnection ( );
       
@@ -32,6 +34,8 @@ namespace remolonUtil
   class SendablePacket : public Packet
   {
     public:
+      virtual ~SendablePacket ( ) = default;
+
       void writeChar ( char c_ );
       void writeShort ( short s_ );
       void writeInt ( int i_ );
@@ -50,6 +54,8 @@ namespace remolonUtil
   class ReceivablePacket : public Packet
   {
     public:
+      virtual ~ReceivablePacket ( ) = default;
+
       char readChar ( );
       short readShort ( );
       int readInt ( );

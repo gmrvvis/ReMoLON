@@ -21,15 +21,24 @@ namespace remolonUtil
     shutDown ( );
   }
 
-  void SecureServer::start ( )
+  void SecureServer::start ( bool blocking_ )
   {
     _active = true;
+    _blocking = blocking_;
 
     initializeSocket ( );
 
-    _acceptorThread = std::thread( &SecureServer::acceptLoop, this );
     _selectorWorkers.emplace_back ( std::make_unique< remolonUtil::SelectorThread > ( _packetThreadPool, 
                                                                                       _packetHandler ) );
+
+    if ( blocking_ )
+    {
+      acceptLoop ( );
+    }
+    else
+    {
+      _acceptorThread = std::thread( &SecureServer::acceptLoop, this );
+    }
   }
 
   void SecureServer::initializeSocket ( )
@@ -129,7 +138,7 @@ namespace remolonUtil
         //_serverSocket.get ( )->close ( );
         // SSL connections not finishing using standard close ( ) method
         _serverSocket.get ( )->impl ( )->shutdown ( );
-        if ( _acceptorThread.joinable ( ) )
+        if ( !_blocking && _acceptorThread.joinable ( ) )
         {
           _acceptorThread.join ( );
         }

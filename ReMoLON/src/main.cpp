@@ -20,10 +20,8 @@ int main ( int argc, char ** argv )
   remolonUtil::SendablePacketPtr nodeInfo = std::make_unique < frontendclientpackets::NodeInfo > ( );
   client.sendPacket ( nodeInfo );
 
-  std::unique_lock < std::mutex > l ( m );
-  cv.wait ( l );
-
-  std::cout << "IM OUT <<<<<<<<<<<<<<<<<" << std::endl;
+  remolonUtil::Server & server = remolon::Node::getInstance ( ).getNodeServer ( );
+  server.start ( true );
 
   return 0;
 }

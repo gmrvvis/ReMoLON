@@ -6,7 +6,7 @@ namespace remolon
   {
     char RequestFinishSession::getOpcode ( )
     {
-      return 0x01;
+      return 0x02;
     }
 
     void RequestFinishSession::writeImpl ( )

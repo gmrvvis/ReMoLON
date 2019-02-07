@@ -11,7 +11,7 @@ namespace remolon
 
     char RequestAllowAddress::getOpcode ( )
     {
-      return 0x00;
+      return 0x01;
     }
 
     void RequestAllowAddress::writeImpl ( )

@@ -1,5 +1,8 @@
 #include "frontendserverpackets/RequestNodeInfo.h"
 
+#include "frontendclientpackets/NodeInfo.h"
+#include "Node.h"
+
 #include <iostream>
 
 namespace remolon
@@ -18,7 +21,13 @@ namespace remolon
 
     void RequestNodeInfo::executePacketAction ( )
     {
-      std::cout << "Requested node info from frontend" << std::endl;
+      remolonUtil::SecureClient &
+      clnt = Node::getInstance ( ).getFrontendClient ( );
+
+      remolonUtil::SendablePacketPtr 
+      nodeInfo = std::make_unique < frontendclientpackets::NodeInfo > ( );
+
+      clnt.sendPacket ( nodeInfo );
     }
   }
 }

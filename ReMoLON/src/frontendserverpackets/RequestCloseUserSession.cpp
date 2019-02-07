@@ -1,5 +1,9 @@
 #include "frontendserverpackets/RequestCloseUserSession.h"
 
+#include "SessionManager.h"
+#include "Node.h"
+#include "frontendclientpackets/CloseSessionResult.h"
+
 namespace remolon
 {
   namespace frontendserverpackets
@@ -17,7 +21,15 @@ namespace remolon
 
     void RequestCloseUserSession::executePacketAction ( )
     {
+      SessionManager::getInstance ( ).finishSession ( _userName, _sessionName );
 
+      remolonUtil::SecureClient & clnt = Node::getInstance ( ).getFrontendClient ( );
+
+      remolonUtil::SendablePacketPtr 
+      closeResult = std::make_unique < frontendclientpackets::CloseSessionResult > ( _userName,
+                                                                                     _sessionName,
+                                                                                     0 );
+      clnt.sendPacket ( closeResult );                                                                              
     }
   }
 }
