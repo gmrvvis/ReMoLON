@@ -32,6 +32,8 @@ namespace remolonFrontend
         int slotPort = readInt ( );
         bool usedPort = readInt ( ) > 0;
 
+        std::cout << "Port " << slotPort << " used? " << usedPort << std::endl;
+
         node->addAvailablePort ( slotPort, usedPort );
 
         if ( usedPort )

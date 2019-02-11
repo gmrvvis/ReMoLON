@@ -23,13 +23,13 @@ namespace remolon
     {
       SessionManager::getInstance ( ).finishSession ( _userName, _sessionName );
 
-      remolonUtil::SecureClient & clnt = Node::getInstance ( ).getFrontendClient ( );
+      remolonUtil::Client * clnt = Node::getInstance ( ).getFrontendClient ( );
 
       remolonUtil::SendablePacketPtr 
       closeResult = std::make_unique < frontendclientpackets::CloseSessionResult > ( _userName,
                                                                                      _sessionName,
                                                                                      0 );
-      clnt.sendPacket ( closeResult );                                                                              
+      clnt->sendPacket ( closeResult );                                                                            
     }
   }
 }

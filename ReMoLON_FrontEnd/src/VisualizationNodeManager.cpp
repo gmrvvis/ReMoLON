@@ -21,7 +21,7 @@ namespace remolonFrontend
 
   VisualizationNode * VisualizationNodeManager::registerOrGetNode ( remolonUtil::Connection * con_ )
   {
-    std::string address = con_->peerAddress ( ).host ( ).toString ( );
+    std::string address = con_->clientAddress ( );
     
     VisualizationNode * node = getNode ( address );
     if ( node != nullptr )

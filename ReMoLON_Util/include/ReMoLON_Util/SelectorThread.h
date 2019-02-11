@@ -26,7 +26,7 @@ namespace remolonUtil
 
       std::size_t getNumConnections ( );
 
-      bool addConnection ( Connection * con_ );
+      bool addConnection ( ConnectionPtr & con_ );
       bool removeConnection ( Connection * con_ );
 
       void selectLoop ( );
@@ -46,7 +46,7 @@ namespace remolonUtil
 
       bool _active;
 
-      std::map < int, Connection * > _connections;
+      std::map < int, ConnectionPtr > _connections;
       Poco::Net::PollSet _socketProcessSet;
 
       std::mutex _mtx;

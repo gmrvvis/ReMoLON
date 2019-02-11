@@ -15,13 +15,13 @@ int main ( int argc, char ** argv )
 
   remolon::Node::getInstance ( ).initialize ( "./remolonClientConfig.cfg" );
 
-  remolonUtil::SecureClient & client = remolon::Node::getInstance ( ).getFrontendClient ( );
+  remolonUtil::Client * client = remolon::Node::getInstance ( ).getFrontendClient ( );
 
   remolonUtil::SendablePacketPtr nodeInfo = std::make_unique < frontendclientpackets::NodeInfo > ( );
-  client.sendPacket ( nodeInfo );
+  client->sendPacket ( nodeInfo );
 
-  remolonUtil::Server & server = remolon::Node::getInstance ( ).getNodeServer ( );
-  server.start ( true );
+  remolonUtil::AbstractServer * server = remolon::Node::getInstance ( ).getNodeServer ( );
+  server->start ( true );
 
   return 0;
 }

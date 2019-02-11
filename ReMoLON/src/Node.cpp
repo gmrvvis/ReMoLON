@@ -25,32 +25,40 @@ namespace remolon
   void Node::initialize ( const std::string & clientConfigFilePath_ )
   {
     remolonUtil::Config clientCfg ( clientConfigFilePath_ );
-    remolonUtil::TClientConfig clientConfig;
 
     _remotooBinDir = clientCfg.getProperty ( "remotooBinaryDir" );
     _remolonXinitrcDir = clientCfg.getProperty ( "remolonXinitrcDir" );
 
-    clientConfig._serverAddress = clientCfg.getProperty ( "serverAddress" );
-		clientConfig._serverPort = clientCfg.getIntProperty ( "serverPort" );
-		clientConfig._keyFilePath = clientCfg.getProperty ( "keyFilePath" );
-		clientConfig._certFilePath = clientCfg.getProperty ( "certificateFilePath" );
-		clientConfig._caFilePath = clientCfg.getProperty ( "CAFilePath" );
+    std::string frontendServerAddress = clientCfg.getProperty ( "frontendServerAddress" );
+		std::uint16_t frontendServerPort = clientCfg.getIntProperty ( "frontendServerPort" );
+
+#ifdef REMOLON_NO_SSL_
+    _client = std::make_unique < remolonUtil::RawClient > ( frontendServerAddress,
+                                                            frontendServerPort );
+#else
+		std::string keyFilePath = clientCfg.getProperty ( "keyFilePath" );
+		std::string certFilePath = clientCfg.getProperty ( "certificateFilePath" );
+		std::string caFilePath = clientCfg.getProperty ( "CAFilePath" );
 
     // Initialize client
-    _client = std::make_unique < remolonUtil::SecureClient > ( clientConfig );
-    remolonUtil::SecureClient * cPtr = _client.get ( );
+    _client = std::make_unique < remolonUtil::SecureClient > ( frontendServerAddress,
+                                                               frontendServerPort,
+                                                               keyFilePath,
+                                                               certFilePath,
+                                                               caFilePath );
+#endif
+    remolonUtil::Client * cPtr = _client.get ( );
     cPtr->registerReceivablePacket < frontendserverpackets::RequestNodeInfo > ( );
     cPtr->registerReceivablePacket < frontendserverpackets::RequestStartStreamingSession > ( );
     cPtr->registerReceivablePacket < frontendserverpackets::RequestCloseUserSession > ( );
     cPtr->connect ( );
 
     // Initialize server
-    remolonUtil::TServerConfig serverConfig;
-    serverConfig._bindToAddress = clientCfg.getProperty ( "innerServerAddress" );
-    serverConfig._bindToPort = clientCfg.getIntProperty ( "innerServerPort" );
+    std::string bindToAddress = clientCfg.getProperty ( "innerServerAddress" );
+    std::uint16_t bindToPort = clientCfg.getIntProperty ( "innerServerPort" );
     
-    _server = std::make_unique < remolonUtil::Server > ( serverConfig );
-    remolonUtil::Server * sPtr = _server.get ( );
+    _server = std::make_unique < remolonUtil::RawServer > ( bindToAddress, bindToPort );
+    remolonUtil::RawServer * sPtr = _server.get ( );
     sPtr->registerReceivablePacket < remotooclientpackets::SessionInfo > ( );
     sPtr->registerReceivablePacket < remotooclientpackets::AllowAddressAnswer > ( );
 
@@ -111,13 +119,13 @@ namespace remolon
     return _remolonXinitrcDir;
   }
 
-  remolonUtil::SecureClient & Node::getFrontendClient ( )
+  remolonUtil::Client * Node::getFrontendClient ( )
   {
-    return *( _client.get ( ) );
+    return _client.get ( );
   }
 
-  remolonUtil::Server & Node::getNodeServer ( )
+  remolonUtil::AbstractServer * Node::getNodeServer ( )
   {
-    return *( _server.get ( ) );
+    return _server.get ( );
   }
 }

@@ -12,7 +12,7 @@ namespace remolonFrontend
     _con = con_;
     if ( _con )
     {
-      _address = _con->peerAddress ( ).toString ( );
+      _address = _con->clientAddress ( );
     }
   }
 

@@ -59,7 +59,7 @@ namespace remolonUtil
       else
       {
 
-        std::string msg = "unknown packet with opcode " + std::to_string ( packetOpcode ) + " from " + con_.address( ).toString( );
+        std::string msg = "unknown packet with opcode " + std::to_string ( packetOpcode ) + " from " + con_.clientAddress ( );
         throw std::runtime_error ( msg.c_str ( ) );
         return nullptr;
       }

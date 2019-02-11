@@ -5,7 +5,9 @@
 #include <thread>
 #include <vector>
 
-#include "ReMoLON_Util/SecureServer.h"
+#include "ReMoLON_Util/Server.h"
+
+#define REMOLON_NO_SSL_
 
 namespace remolonFrontend
 {
@@ -24,7 +26,11 @@ namespace remolonFrontend
 
 			static SessionManagerServer _INSTANCE;
       
+#ifdef REMOLON_NO_SSL_
+			std::unique_ptr < remolonUtil::RawServer > _server;
+#else
       std::unique_ptr < remolonUtil::SecureServer > _server;
+#endif
 	};
 }
 

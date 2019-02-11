@@ -56,7 +56,7 @@ namespace remolon
   {
     std::unique_lock < std::mutex > lock ( _mtx );
 
-    remolonUtil::SecureClient & 
+    remolonUtil::Client * 
     client = Node::getInstance ( ).getFrontendClient ( );
 
     remolonUtil::SendablePacketPtr result;
@@ -72,7 +72,7 @@ namespace remolon
       result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
                                                                                          sessionName_,
                                                                                          SESSION_LAUNCH_PORT_UNAVAILABLE );
-      client.sendPacket ( result );
+      client->sendPacket ( result );
       std::cout << "Couldnt start session: port in use" << std::endl;                                                                                
       return;
     }
@@ -87,7 +87,7 @@ namespace remolon
       result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
                                                                                          sessionName_,
                                                                                          SESSION_LAUNCH_DUPLICATE_NAME );
-      client.sendPacket ( result );                                                                                  
+      client->sendPacket ( result );                                                                                  
       return;
     }
 
@@ -97,7 +97,7 @@ namespace remolon
     session.setSessionOwnerAddress ( ownerAddress_ );
     session.setSessionPorts ( port_, sockPort, rtcPort );
 
-    if ( session.tryLaunchSession ( ) )
+    if ( true )//session.tryLaunchSession ( ) )
     {
       result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
                                                                                          sessionName_,
@@ -110,7 +110,7 @@ namespace remolon
                                                                                          SESSION_LAUNCH_CRASHED );
     }
     
-    client.sendPacket ( result );
+    client->sendPacket ( result );
   }
 
   void SessionManager::finishSession ( const std::string & ownerName_,
