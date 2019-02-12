@@ -4,6 +4,8 @@
 #include "Node.h"
 #include "frontendclientpackets/CloseSessionResult.h"
 
+#include <iostream>
+
 namespace remolon
 {
   namespace frontendserverpackets
@@ -21,6 +23,7 @@ namespace remolon
 
     void RequestCloseUserSession::executePacketAction ( )
     {
+      std::cout << "Received request to close session " << _sessionName << " from user " << _userName << std::endl;
       SessionManager::getInstance ( ).finishSession ( _userName, _sessionName );
 
       remolonUtil::Client * clnt = Node::getInstance ( ).getFrontendClient ( );

@@ -150,6 +150,7 @@ namespace remolon
 
   void StreamingSession::finishSession ( )
   {
+    std::cout << "Sending packet to streaming session" << std::endl;
     remolonUtil::SendablePacketPtr 
     finishPacket = std::make_unique< remotooserverpackets::RequestFinishSession > ( );
     _connection->sendPacket ( finishPacket );

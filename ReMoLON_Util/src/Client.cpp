@@ -127,6 +127,10 @@ namespace remolonUtil
     }
   }
 
+  void Client::onConnectionClose ( )
+  {
+  }
+
   void Client::close ( )
   {
     _active = false;
@@ -150,7 +154,7 @@ namespace remolonUtil
       _executorThread.join ( );
     }
 
-    Poco::Net::uninitializeSSL ( );
+    onConnectionClose ( );
   }
 
   void Client::handleCrash ( )
@@ -171,7 +175,7 @@ namespace remolonUtil
       _executorThread.join ( );
     }
     
-    Poco::Net::uninitializeSSL ( );
+    onConnectionClose ( );
   }
 
   // ==============================================================================================
@@ -206,5 +210,10 @@ namespace remolonUtil
                                                           _keyFile,
                                                           _certFile,
                                                           _caFile );
+  }
+
+  void SecureClient::onConnectionClose ( )
+  {
+    Poco::Net::uninitializeSSL ( );
   }
 }

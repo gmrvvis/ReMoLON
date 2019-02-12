@@ -32,6 +32,7 @@ namespace remolonUtil
       // Executes received packet actions
       void execLoop ( );
 
+      virtual void onConnectionClose ( );
       void close ( );
       void handleCrash ( );
 
@@ -82,6 +83,7 @@ namespace remolonUtil
                      const std::string & keyFile_ = "",
                      const std::string & certFile_ = "",
                      const std::string & caFile_ = "" );
+      void onConnectionClose ( );
     protected:
       void initializeConnection ( );
     private:

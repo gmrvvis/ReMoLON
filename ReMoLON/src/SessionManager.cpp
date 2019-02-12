@@ -97,7 +97,7 @@ namespace remolon
     session.setSessionOwnerAddress ( ownerAddress_ );
     session.setSessionPorts ( port_, sockPort, rtcPort );
 
-    if ( true )//session.tryLaunchSession ( ) )
+    if ( session.tryLaunchSession ( ) )
     {
       result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
                                                                                          sessionName_,
@@ -116,6 +116,8 @@ namespace remolon
   void SessionManager::finishSession ( const std::string & ownerName_,
                                        const std::string & sessionName_ )
   {
+    std::unique_lock < std::mutex > lock ( _mtx );
+    
     sessionList & sList = _streamSessions [ ownerName_ ];
     auto it = sList.find ( sessionName_ );
 
@@ -128,14 +130,25 @@ namespace remolon
 
     // Send signal to process
     session.finishSession ( );
+  }
+
+  void SessionManager::clearSession ( StreamingSession & session )
+  {
+    std::unique_lock < std::mutex > lock ( _mtx );
 
     // Release used ports
-    std::unique_lock < std::mutex > lock ( _mtx );
     _usedPorts [ session.getSessionPort ( ) ] = false;
     _usedSockPorts [ session.getSessionSocketPort ( ) ] = false;
     _usedRTCPorts [ session.getSessionRTCPort ( ) ] = false;
 
-    // Release resources
+    sessionList & sList = _streamSessions [ session.getSessionOwner ( ) ];
+    auto it = sList.find ( session.getSessionName ( ) );
+
+    if ( it == sList.end ( ) )
+    {
+      return;
+    }
+
     sList.erase ( it );
   }
 

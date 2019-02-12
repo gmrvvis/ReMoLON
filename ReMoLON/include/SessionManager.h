@@ -32,6 +32,7 @@ namespace remolon
 
       void finishSession ( const std::string & ownerName_,
                            const std::string & sessionName_ );
+      void clearSession ( StreamingSession & session );
 
       StreamingSession * getStreamSession ( const std::string & owernName_,
                                             const std::string & sessionName_ );

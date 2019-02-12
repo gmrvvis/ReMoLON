@@ -13,6 +13,7 @@
 #include "httpactions/LogInActionHandler.h"
 #include "httpactions/SessionListActionHandler.h"
 #include "httpactions/CreateSessionActionHandler.h"
+#include "httpactions/DestroySessionActionHandler.h"
 
 namespace remolonFrontend
 {
@@ -32,10 +33,11 @@ namespace remolonFrontend
 
   int WebServer::main ( const std::vector<std::string> & )
   {
-		RequestManager::getInstance().registerActionHandler < httpactions::DefaultActionHandler > ( );
-		RequestManager::getInstance().registerActionHandler < httpactions::LogInActionHandler > ( );
-		RequestManager::getInstance().registerActionHandler < httpactions::SessionListActionHandler > ( );
-		RequestManager::getInstance().registerActionHandler < httpactions::CreateSessionActionHandler > ( );
+		RequestManager::getInstance ( ).registerActionHandler < httpactions::DefaultActionHandler > ( );
+		RequestManager::getInstance ( ).registerActionHandler < httpactions::LogInActionHandler > ( );
+		RequestManager::getInstance ( ).registerActionHandler < httpactions::SessionListActionHandler > ( );
+		RequestManager::getInstance ( ).registerActionHandler < httpactions::CreateSessionActionHandler > ( );
+    RequestManager::getInstance ( ).registerActionHandler < httpactions::DestroySessionActionHandler > ( );
 
     Poco::Net::HTTPServer s ( new RequestHandlerFactory ( ), 
                               Poco::Net::ServerSocket ( _port ), 
