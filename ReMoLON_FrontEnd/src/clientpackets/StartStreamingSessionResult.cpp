@@ -1,7 +1,5 @@
 #include "clientpackets/StartStreamingSessionResult.h"
 
-#include <iostream>
-
 #include "UserManager.h"
 #include "SessionTracker.h"
 
@@ -28,8 +26,6 @@ namespace remolonFrontend
       {
         return;
       }
-
-      std::cout << "Received answer for " << _userName << " and session " << _sessionName << " status " << _creationStatus << std::endl;
 
       SessionTracker::getInstance ( ).createSession ( *usr, _sessionName, _creationStatus );
     }

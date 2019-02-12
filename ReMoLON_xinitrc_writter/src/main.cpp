@@ -29,9 +29,11 @@ int main(int argc, char ** argv)
 
   ofstream xinit;
   xinit.open (buf, std::ios::out | std::ios::trunc);
+  xinit << "#!/usr/bin/env bash \n";
+  xinit << "export XSESSION_PID=\"$$\"\n";
   xinit << "gnome-terminal &\n";
   xinit << "cd " << remotooDir << "\n";
-  xinit << "./remotoo " << session << " " << user << " " << userIP << " " << webPort << " " << sockPort << " " << rtcPort << " &\n";
+  xinit << "./remotoo " << session << " " << user << " " << userIP << " " << webPort << " " << sockPort << " " << rtcPort << " $XSESSION_PID &\n";
   xinit << "exec gnome-session\n";
   xinit.flush();
   xinit.close();

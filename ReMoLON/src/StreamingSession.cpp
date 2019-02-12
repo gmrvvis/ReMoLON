@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "Node.h"
+#include "SessionManager.h"
 
 #include "remotooserverpackets/RequestFinishSession.h"
 
@@ -133,12 +134,16 @@ namespace remolon
           {
             int status;
             waitpid ( child, &status, 0 );
+
+            SessionManager::getInstance ( ).clearSession ( *this );
+
             if ( status != 0 )
             {
               // Handle error on session closing (or even startup)
             }
           }
       });
+      _streamingProcess.detach ( );
     }
     catch( std::exception & e )
     {

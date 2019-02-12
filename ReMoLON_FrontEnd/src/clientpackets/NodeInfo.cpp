@@ -3,8 +3,6 @@
 #include "ReMoLON_Util/Connection.h"
 #include "VisualizationNodeManager.h"
 
-#include <iostream>
-
 namespace remolonFrontend
 {
   namespace clientpackets
@@ -24,15 +22,11 @@ namespace remolonFrontend
       const int totalSlots = readInt ( );
       node->setTotalSlots ( totalSlots );
 
-      std::cout << "New visualization node registered on address " << publicAddr << std::endl;
-
       int used = 0;
       for ( int i = 0; i <  totalSlots; i++ )
       {
         int slotPort = readInt ( );
         bool usedPort = readInt ( ) > 0;
-
-        std::cout << "Port " << slotPort << " used? " << usedPort << std::endl;
 
         node->addAvailablePort ( slotPort, usedPort );
 

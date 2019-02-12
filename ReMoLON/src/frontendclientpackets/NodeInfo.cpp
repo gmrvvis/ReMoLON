@@ -14,8 +14,6 @@ namespace remolon
 
     void NodeInfo::writeImpl ( )
     {
-      std::cout << "Sending node info" << std::endl;
-
       const std::string & address = SessionManager::getInstance ( ).getPublicAddress ( );
       writeString ( address );
 

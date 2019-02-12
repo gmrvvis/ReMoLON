@@ -23,7 +23,6 @@ namespace remolon
 
     void RequestCloseUserSession::executePacketAction ( )
     {
-      std::cout << "Received request to close session " << _sessionName << " from user " << _userName << std::endl;
       SessionManager::getInstance ( ).finishSession ( _userName, _sessionName );
 
       remolonUtil::Client * clnt = Node::getInstance ( ).getFrontendClient ( );

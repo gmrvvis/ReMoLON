@@ -1,7 +1,5 @@
 #include "serverpackets/RequestStartStreamingSession.h"
 
-#include <iostream>
-
 namespace remolonFrontend
 {
   namespace serverpackets
@@ -27,8 +25,6 @@ namespace remolonFrontend
       writeString ( _userAddress );
       writeString ( _sessionName );
       writeInt ( _port );
-
-      std::cout << "Send request start new session with user " << _userName << " in port " << _port << std::endl;
     }
   }
 }

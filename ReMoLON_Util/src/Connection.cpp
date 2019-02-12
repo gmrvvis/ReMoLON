@@ -114,7 +114,7 @@ namespace remolonUtil
    : Connection ( )
   {
     _socket = std::make_unique < Poco::Net::StreamSocket > ( socket_ );
-    _socket.get ( )->setReceiveTimeout ( Poco::Timespan ( 0, 50000 ));
+    _socket.get ( )->setReceiveTimeout ( Poco::Timespan ( 0, 10000 ));
   }
 
   SecureConnection::SecureConnection ( const std::string & address_, uint16_t port_,
@@ -154,7 +154,7 @@ namespace remolonUtil
    : Connection ( )
   {
     _socket = std::make_unique < Poco::Net::SecureStreamSocket > ( socket_ );
-    _socket.get ( )->setReceiveTimeout ( Poco::Timespan ( 0, 50000 ));
+    _socket.get ( )->setReceiveTimeout ( Poco::Timespan ( 0, 10000 ));
     Poco::Net::SecureStreamSocket * ssock = static_cast< Poco::Net::SecureStreamSocket * > ( _socket.get ( ) );
     ssock->completeHandshake ( );
   }

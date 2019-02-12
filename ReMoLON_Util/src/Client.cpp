@@ -6,6 +6,8 @@
 #include <Poco/Net/ConsoleCertificateHandler.h>
 #include <Poco/Net/SSLManager.h>
 
+#include <iostream>
+
 namespace remolonUtil
 {
   Client::Client ( const std::string & address_, std::uint16_t port_ )
@@ -27,8 +29,11 @@ namespace remolonUtil
     initializeConnection ( );
 
     _recvThread = std::thread ( &Client::recvLoop, this );
+    _recvThread.detach ( );
     _sendThread = std::thread ( &Client::sendLoop, this );
+    _sendThread.detach ( );
     _executorThread = std::thread ( &Client::execLoop, this );
+    _executorThread.detach ( );
   }
 
   void Client::sendPacket ( SendablePacketPtr & sendable )
@@ -49,7 +54,7 @@ namespace remolonUtil
       
       int recv = socket->receiveBytes ( _recvBuffer.getData ( ), _recvBuffer.getSize ( ) );
 
-      if ( recv > 0)
+      if ( recv > 0 )
       {
         _recvBuffer.setWritePos ( recv );
 
@@ -73,6 +78,8 @@ namespace remolonUtil
     {
       handleCrash ( );
     }
+
+    std::cout << "Done recv thread" << std::endl;
   }
 
   void Client::sendLoop ( )
@@ -100,6 +107,8 @@ namespace remolonUtil
         socket->sendBytes ( _sendBuffer.getData ( ), _sendBuffer.getUsedSize ( ) );
       }
     }
+
+    std::cout << "Done send thread" << std::endl;
   }
 
   void Client::execLoop ( )
@@ -112,7 +121,7 @@ namespace remolonUtil
         _execMonitor.wait ( execLock );
       }
 
-      if ( !_execQueue.empty ( ) )
+      if ( _active && !_execQueue.empty ( ) )
       {
         ReceivablePacketPtr next = std::move ( _execQueue.front ( ) );
         _execQueue.pop ( );
@@ -125,6 +134,8 @@ namespace remolonUtil
 
       execLock.unlock ( );
     }
+
+    std::cout << "Done exec thread" << std::endl;
   }
 
   void Client::onConnectionClose ( )
@@ -139,6 +150,8 @@ namespace remolonUtil
     _sendMonitor.notify_all ( );
     _execMonitor.notify_all ( );
 
+    std::cout << "Monitors called" << std::endl;
+/*
     if ( _recvThread.joinable ( ) )
     {
       _recvThread.join ( );
@@ -153,7 +166,7 @@ namespace remolonUtil
     {
       _executorThread.join ( );
     }
-
+*/
     onConnectionClose ( );
   }
 
@@ -164,7 +177,7 @@ namespace remolonUtil
     _connection.get ( )->endConnection ( );
     _sendMonitor.notify_all ( );
     _execMonitor.notify_all ( );
-    
+  /*  
     if ( _sendThread.joinable ( ) )
     {
       _sendThread.join ( );
@@ -174,7 +187,7 @@ namespace remolonUtil
     {
       _executorThread.join ( );
     }
-    
+   */ 
     onConnectionClose ( );
   }
 
