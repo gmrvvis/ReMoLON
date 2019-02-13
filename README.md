@@ -49,3 +49,25 @@ mkdir remolon/build && cd remolon/build
 cmake ..
 make
 ```
+
+## Configuration
+
+There are 2 configuration files which must be edited, if needed, to make ReMoLON
+work properly:
+* frontendServerConfig.cfg: Located in the ReMolON Frontend build directory after
+  compilation. In this file the address and port to which the ReMoLON instances 
+  management server will be binded (and, thus, to which address and port the ReMoLON
+  instances must be configured to connect to). It also includes, as well, the settings
+  to specify the path to the Key, Certificate, and Chan of Authority certificate files
+  if ReMoLON uses SSL for its communications.
+* remolonClientConfig.cfg: Located in the ReMoLON build directory. Contains settings to:
+    * Configure the address and port where ReMoLON Frontend will be listening for
+      connections (the same as specified in frontendServerConfig.cfg)
+    * Configure the Key, Certificate, and Chain of Authority certificate if ReMoLON and
+      ReMoLON Frontend are build to use SSL
+    * The public address which should be accessible by the end users, used to bind the
+      streaming web servers of each session.
+    * The ports available to ReMoLON on which to launch streaming sessions. The are 3 port
+      lists, one for webservers, one for websocket-based streaming, and one for webrtc-based
+      streaming. They all must have the same amount of items, and the ports should be unique
+      across the 3 lists.
