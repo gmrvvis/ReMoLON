@@ -149,7 +149,6 @@ namespace remolonUtil
   {
     int total = 0;
     int received;
-    int offset = 0;
 
     // Discard any previous content from another connection
     // TODO: Temporary-auxiliar buffers per client to save split content?

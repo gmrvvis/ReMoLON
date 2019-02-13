@@ -71,11 +71,11 @@ namespace remolonUtil
       std::string readString ( );
 
     private:
-      char * _buf;
-
-      std::size_t _size;
+      //###
+      char * _buf = nullptr;
       std::size_t _used;
       std::size_t _read;
+      std::size_t _size;
   };
 }
 

@@ -33,6 +33,10 @@ namespace remolonFrontend
                  struct pam_response ** resp_, 
                  void * appdata_ptr_ ) 
 	{
+    //###
+		(void)msg_;
+		(void)appdata_ptr_;
+		(void)num_msg_;    
 		*resp_ = reply;
 		return PAM_SUCCESS;
 	}

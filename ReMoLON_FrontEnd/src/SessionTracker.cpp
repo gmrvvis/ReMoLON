@@ -90,7 +90,9 @@ namespace remolonFrontend
     sessionInfo._status = SessionStatus::SESSION_CREATING;
 
     result_ = &sessionInfo;
-
+    //###
+    (void)result_;
+    
     remolonUtil::SendablePacketPtr 
     startPacket = std::make_unique < serverpackets::RequestStartStreamingSession > ( user_,
                                                                                      sessionName_,

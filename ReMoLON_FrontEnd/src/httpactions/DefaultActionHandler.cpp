@@ -49,13 +49,13 @@ namespace remolonFrontend
 
 			if( !UserManager::getInstance ( ).isUserLoggedIn ( ipAddrStr ) )
 			{
-				std::ifstream file ( "client/auth.html", std::ios::binary );
+				std::ifstream file ( "FEClient/auth.html", std::ios::binary );
 				response_.setContentType ( "text/html" );
 				Poco::StreamCopier::copyStream ( file, response_.send ( ) );
 			}
 			else
 			{
-				std::ifstream file ( "client/index.html", std::ios::binary );
+				std::ifstream file ( "FEClient/index.html", std::ios::binary );
 				response_.setContentType ( "text/html" );
 				Poco::StreamCopier::copyStream ( file, response_.send ( ) );
 			}

@@ -85,17 +85,20 @@ namespace remolon
     return _sessionOwnerAddress;
   }
 
-  uint16_t StreamingSession::getSessionPort ( )
+  //###uint16_t StreamingSession::getSessionPort ( )
+  unsigned int StreamingSession::getSessionPort ( )
   {
     return _sessionPort;
   }
 
-  uint16_t StreamingSession::getSessionSocketPort ( )
+  //uint16_t StreamingSession::getSessionSocketPort ( )
+  unsigned int StreamingSession::getSessionSocketPort ( )
   {
     return _sessionSockPort;
   }
 
-  uint16_t StreamingSession::getSessionRTCPort ( )
+  //###uint16_t StreamingSession::getSessionRTCPort ( )
+  unsigned int StreamingSession::getSessionRTCPort ( )
   {
     return _sessionRTCPort;
   }

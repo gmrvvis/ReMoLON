@@ -35,6 +35,7 @@ namespace remolonUtil
       {
 
       }
+      virtual ~AbstractPacketFactory ( void ) = default;
 
       virtual ReceivablePacketPtr createPacket ( ) = 0;
   };
@@ -72,7 +73,7 @@ namespace remolonUtil
           AbstractPacketFactoryPtr factory = std::make_unique < PacketFactory< T > > ( );
           ReceivablePacketPtr tempPacket = factory.get ( )->createPacket ( );
 
-          int opcode = tempPacket.get ( )->getOpcode ( );
+          unsigned int opcode = tempPacket.get ( )->getOpcode ( );
           if ( opcode >= _packetFactories.size ( ) )
           {
             throw std::runtime_error ( "packetHandler: Attempted to register a packet with a higher opcode than supoorted");

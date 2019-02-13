@@ -133,7 +133,7 @@ namespace remolonUtil
           return;
         }
 
-        for ( int i = 0; i < _minPoolSize; i++ )
+        for ( unsigned int i = 0; i < _minPoolSize; i++ )
         {
           createWorker ( );
         }
@@ -234,11 +234,11 @@ namespace remolonUtil
           std::condition_variable _monitor;
           std::mutex _poolMtx;
           std::queue < std::unique_ptr<T> > _tasks;
-          int _minPoolSize;
+          unsigned int _minPoolSize;
           int _maxPoolSize;
-          int _currentPoolSize;
+          unsigned int _currentPoolSize;
           long _maxIdleTimeMilis;
-          long _maxQueueSize;
+          unsigned long _maxQueueSize;
           bool _active;
   };
 }

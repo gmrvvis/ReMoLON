@@ -29,7 +29,8 @@
 std::mutex m;
 std::condition_variable cv;
 
-int main ( int argc, char ** argv )
+//###int main ( int argc, char ** argv )
+int main ( void )
 {
   using namespace remolon;
 

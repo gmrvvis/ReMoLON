@@ -90,7 +90,9 @@ namespace remolonUtil
 
   void AbstractServer::assignConnectionToWorker ( ConnectionPtr & con_ )
   {
-    SelectorThread * lessLoaded;
+    //###SelectorThread * lessLoaded;
+    SelectorThread * lessLoaded = nullptr;
+    
     std::size_t lessLoad = 999999;
     for ( auto & worker : _selectorWorkers )
     {
@@ -102,7 +104,8 @@ namespace remolonUtil
       }
     }
 
-    lessLoaded->addConnection ( con_ );
+    if ( lessLoaded != nullptr ) lessLoaded->addConnection ( con_ );
+    else std::cerr << "ERROR InstanceServer::assignConnectionToWorker() no lessWorkLoad found" << std::endl;
   }
 
   void AbstractServer::shutDown ( )

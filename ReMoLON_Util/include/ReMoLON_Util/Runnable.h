@@ -29,6 +29,7 @@ namespace remolonUtil
   {
     public:
       virtual void run ( ) { }
+      virtual ~Runnable ( void ) = default;
   };
 
   typedef std::unique_ptr < Runnable > runnablePtr;

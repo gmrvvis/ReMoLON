@@ -40,7 +40,7 @@ namespace remolonUtil
   {
     public:
       AbstractServer ( const std::string & address_, std::uint16_t port_ );
-      ~AbstractServer ( );
+      virtual ~AbstractServer ( void );
 
       void start ( bool blocking_ = false );
 
@@ -81,6 +81,7 @@ namespace remolonUtil
   {
     public:
       RawServer ( const std::string & address_, std::uint16_t port_ );
+      virtual ~RawServer ( void ) = default;
       std::unique_ptr < Connection > createNewConnection ( const Poco::Net::Socket & socket_ );
     protected:
       void initializeSocket ( );
@@ -93,6 +94,7 @@ namespace remolonUtil
                      const std::string & keyFile_,
                      const std::string & certFile_,
                      const std::string & caFile_ );
+      virtual ~SecureServer ( void ) = default;
 
       std::unique_ptr < Connection > createNewConnection ( const Poco::Net::Socket & socket_ );
     protected:
