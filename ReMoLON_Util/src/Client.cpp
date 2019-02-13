@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2019 CCS/UPM - GMRV/URJC.
+ *
+ * Authors: Nadir Román Guerrero <nadir.roman@urjc.es>
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
 #include "ReMoLON_Util/Client.h"
 
 #include <Poco/Net/PrivateKeyPassphraseHandler.h>
@@ -5,8 +25,6 @@
 #include <Poco/Net/InvalidCertificateHandler.h>
 #include <Poco/Net/ConsoleCertificateHandler.h>
 #include <Poco/Net/SSLManager.h>
-
-#include <iostream>
 
 namespace remolonUtil
 {
@@ -78,8 +96,6 @@ namespace remolonUtil
     {
       handleCrash ( );
     }
-
-    std::cout << "Done recv thread" << std::endl;
   }
 
   void Client::sendLoop ( )
@@ -107,8 +123,6 @@ namespace remolonUtil
         socket->sendBytes ( _sendBuffer.getData ( ), _sendBuffer.getUsedSize ( ) );
       }
     }
-
-    std::cout << "Done send thread" << std::endl;
   }
 
   void Client::execLoop ( )
@@ -134,8 +148,6 @@ namespace remolonUtil
 
       execLock.unlock ( );
     }
-
-    std::cout << "Done exec thread" << std::endl;
   }
 
   void Client::onConnectionClose ( )
@@ -150,23 +162,6 @@ namespace remolonUtil
     _sendMonitor.notify_all ( );
     _execMonitor.notify_all ( );
 
-    std::cout << "Monitors called" << std::endl;
-/*
-    if ( _recvThread.joinable ( ) )
-    {
-      _recvThread.join ( );
-    }
-
-    if ( _sendThread.joinable ( ) )
-    {
-      _sendThread.join ( );
-    }
-
-    if ( _executorThread.joinable ( ) )
-    {
-      _executorThread.join ( );
-    }
-*/
     onConnectionClose ( );
   }
 
@@ -177,17 +172,7 @@ namespace remolonUtil
     _connection.get ( )->endConnection ( );
     _sendMonitor.notify_all ( );
     _execMonitor.notify_all ( );
-  /*  
-    if ( _sendThread.joinable ( ) )
-    {
-      _sendThread.join ( );
-    }
-    
-    if ( _executorThread.joinable ( ) )
-    {
-      _executorThread.join ( );
-    }
-   */ 
+  
     onConnectionClose ( );
   }
 
