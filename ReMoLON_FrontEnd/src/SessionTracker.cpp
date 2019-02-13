@@ -1,6 +1,24 @@
-#include "SessionTracker.h"
+/*
+ * Copyright (c) 2019 CCS/UPM - GMRV/URJC.
+ *
+ * Authors: Nadir Román Guerrero <nadir.roman@urjc.es>
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
 
-#include <iostream>
+#include "SessionTracker.h"
 
 #include "VisualizationNodeManager.h"
 #include "UserManager.h"
@@ -18,7 +36,7 @@ namespace remolonFrontend
 
   SessionCreationResult SessionTracker::tryCreateSession ( User & user_, 
                                                            const std::string & sessionName_,
-                                                           streamingSessionInfo * result_ )
+                                                           TStreamingSessionInfo * result_ )
   {
     std::unique_lock < std::mutex > lock ( user_.getUserLock ( ) );
 
@@ -30,7 +48,6 @@ namespace remolonFrontend
       auto innerIt = userSessions.find ( sessionName_ );
       if ( innerIt != userSessions.end ( ) )
       {
-        std::cout << "Creation failed due to duplicate name" << std::endl;
         return SessionCreationResult::CREATION_FAIL_DUPLICATE_NAME;
       }
     }
@@ -59,14 +76,11 @@ namespace remolonFrontend
     // No available node found
     if ( !slotReserved )
     {
-      std::cout << "Creation failed no available nodes" << std::endl;
       return SessionCreationResult::CREATION_FAIL_NO_AVAILABLE_NODES;
     }
 
-    std::cout << "First stage creation. Choosen node: " << node->getAddress ( ) << " in port " << choosenPort << std::endl;
-
     sessionList & userSessionList = _openSessions [ user_.getUserName ( ) ];
-    streamingSessionInfo & sessionInfo = userSessionList [ sessionName_ ];
+    TStreamingSessionInfo & sessionInfo = userSessionList [ sessionName_ ];
     sessionInfo._sessionName = sessionName_;
     sessionInfo._nodeAddress = node->getAddress ( );
     sessionInfo._nodePublicAddress = node->getPublicAddress ( );
@@ -93,7 +107,7 @@ namespace remolonFrontend
   {
     std::unique_lock < std::mutex > lock ( usr_.getUserLock ( ) );
 
-    streamingSessionInfo * info = getSessionInfo ( usr_, sessionName_ );
+    TStreamingSessionInfo * info = getSessionInfo ( usr_, sessionName_ );
     if ( info != nullptr )
     {
       info->_status = status_ == 0? SessionStatus::SESSION_RUNNING : SessionStatus::SESSION_CRASHED;
@@ -105,7 +119,7 @@ namespace remolonFrontend
   {
     std::unique_lock < std::mutex > lock ( user_.getUserLock ( ) );
 
-    streamingSessionInfo * info = getSessionInfo ( user_, sessionName_ );
+    TStreamingSessionInfo * info = getSessionInfo ( user_, sessionName_ );
     if ( info != nullptr )
     {
       info->_status = SessionStatus::SESSION_CLOSING;
@@ -141,7 +155,7 @@ namespace remolonFrontend
     }
   }
 
-  streamingSessionInfo * SessionTracker::getSessionInfo ( User & user_,
+  TStreamingSessionInfo * SessionTracker::getSessionInfo ( User & user_,
                                                           const std::string & sessionName_ )
   {
     auto it = _openSessions.find ( user_.getUserName ( ) );
@@ -157,7 +171,7 @@ namespace remolonFrontend
     return nullptr;
   }
 
-  const std::unordered_map < std::string, streamingSessionInfo > & SessionTracker::getUserSessions ( User & user_ )
+  const std::unordered_map < std::string, TStreamingSessionInfo > & SessionTracker::getUserSessions ( User & user_ )
   {
     sessionList & list = _openSessions [ user_.getUserName ( ) ];
     

@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2019 CCS/UPM - GMRV/URJC.
+ *
+ * Authors: Nadir Román Guerrero <nadir.roman@urjc.es>
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+ 
 #include "ReMoLON_Util/SelectorThread.h"
 
 #include <string>
@@ -32,19 +52,20 @@ namespace remolonUtil
     return _connections.size ( );
   }
 
-  bool SelectorThread::addConnection ( Connection * con_ )
+  bool SelectorThread::addConnection ( ConnectionPtr & con_ )
   {
     std::unique_lock < std::mutex > lock ( _mtx );
 
+    Connection * con = con_.get ( );
     // Only add it if we are not owning it already
-    auto it =  _connections.find ( con_->getSockFD ( ) );
+    auto it =  _connections.find ( con->getSockFD ( ) );
     if ( it == _connections.end ( ) )
     {
       // Set the connection polling source so it can auto-udpate itself
       con_->setPollSetSource ( &_socketProcessSet );
       // Add the  connection to the pollset and the tracking map
-      _connections [ con_->getSockFD ( ) ] =  con_;
-      _socketProcessSet.add ( *con_, Poco::Net::PollSet::POLL_READ );
+      _connections [ con->getSockFD ( ) ] =  std::move ( con_ );
+      _socketProcessSet.add ( *(con->getSocket ( )), Poco::Net::PollSet::POLL_READ );
 
       // Notify the loop thread in case it was sleeping
       // due lack of connections
@@ -61,8 +82,8 @@ namespace remolonUtil
     auto it =  _connections.find ( con_->getSockFD ( ) );
     if ( it != _connections.end ( ) )
     {
-      _socketProcessSet.remove ( *con_ );
-      con_->close ( );
+      _socketProcessSet.remove ( *(con_->getSocket ( )) );
+      con_->endConnection ( );
       _connections.erase ( it );
 
       return true;
@@ -99,7 +120,7 @@ namespace remolonUtil
           {
             int fd = it->first.impl ( )->sockfd ( );
 
-            Connection * con = _connections [ fd ];
+            Connection * con = _connections [ fd ].get ( );
 
             int mask = it->second;
             if ( mask & Poco::Net::PollSet::POLL_READ )
@@ -135,10 +156,12 @@ namespace remolonUtil
     // Shouldn't be necessary as the protocol is compossed of small packets
     _readBuffer.reset ( );
 
+    Poco::Net::StreamSocket * socket = con_->getSocket ( );
+
     try
     {
-      while( (received = con_->receiveBytes( _readBuffer.getAppendPtr( ), 
-                                            _readBuffer.getRemainingWriteSize ( ))) > 0 )
+      while( (received = socket->receiveBytes( _readBuffer.getAppendPtr( ), 
+                                               _readBuffer.getRemainingWriteSize ( ))) > 0 )
       {
         // Write  directly into the selector's read buffer and update the write pos
         // Instead of using an auxiliar array
@@ -162,7 +185,7 @@ namespace remolonUtil
         }
         catch ( std::exception & e )
         {
-          std::cerr << "SelectorThread - error while reading from connection " << (con_->address ( ).toString ( )) << ": " << e.what ( ) << std::endl;
+          std::cerr << "SelectorThread - error while reading from connection " << (socket->peerAddress ( ).toString ( )) << ": " << e.what ( ) << std::endl;
         }
       }
     } 
@@ -175,7 +198,10 @@ namespace remolonUtil
   {
     _writeBuffer.reset ( );
 
+    Poco::Net::StreamSocket * socket = con_->getSocket ( );
+
     SendablePacketPtr sendPtr;
+
     while( ( sendPtr = con_->pollSendablePacket ( ) ) != nullptr )
     {
       _writeBufferHelper.reset ( );
@@ -189,7 +215,7 @@ namespace remolonUtil
       {
         // If we were unable (the send buffer is full)
         // Send the data to the client, then reset the buffer and append the contents
-        con_->sendBytes ( _writeBuffer.getReadPtr ( ), _writeBuffer.getUsedSize ( ), 0 );
+        socket->sendBytes ( _writeBuffer.getReadPtr ( ), _writeBuffer.getUsedSize ( ), 0 );
         _writeBuffer.reset ( );
         _writeBuffer.appendContent ( _writeBufferHelper );
       }
@@ -198,13 +224,14 @@ namespace remolonUtil
     // Send the remaining packets
     if( _writeBuffer.getUsedSize ( ) > 0)
     {
-      con_->sendBytes ( _writeBuffer.getReadPtr ( ), _writeBuffer.getUsedSize ( ), 0 );
+      socket->sendBytes ( _writeBuffer.getReadPtr ( ), _writeBuffer.getUsedSize ( ), 0 );
     }
   }
 
   void SelectorThread::handleConnectionCrash ( Connection * con_ )
   {
-    std::cerr << "Connection from " << con_->address ( ).toString ( ) << " crashed!" << std::endl;
+    Poco::Net::StreamSocket * socket = con_->getSocket ( );
+    std::cerr << "Connection from " << socket->peerAddress ( ).toString ( ) << " crashed!" << std::endl;
     removeConnection ( con_ );
   }
 

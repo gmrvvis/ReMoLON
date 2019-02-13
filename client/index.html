@@ -193,8 +193,9 @@
 					}
 				}
 				
-				xhttp.open("GET", "DestroySession?id=" + id, true);
-				xhttp.send();
+				xhttp.open("POST", "DestroySession", true);
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xhttp.send("id="+id);
 			}
 		</script>
 	</head>

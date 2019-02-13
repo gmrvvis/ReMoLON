@@ -26,10 +26,8 @@ list(APPEND REMOLON_UTIL_SOURCES src/Packet.cpp)
 list(APPEND REMOLON_UTIL_SOURCES src/PacketHandler.cpp)
 list(APPEND REMOLON_UTIL_SOURCES src/SelectorThread.cpp)
 list(APPEND REMOLON_UTIL_SOURCES src/Server.cpp)
-list(APPEND REMOLON_UTIL_SOURCES src/SecureServer.cpp)
 list(APPEND REMOLON_UTIL_SOURCES src/Config.cpp)
 list(APPEND REMOLON_UTIL_SOURCES src/Client.cpp)
-list(APPEND REMOLON_UTIL_SOURCES src/SecureClient.cpp)
 
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/ByteBuffer.h)
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/Connection.h)
@@ -39,10 +37,8 @@ list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/Runnable.h)
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/SelectorThread.h)
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/ThreadPool.h)
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/Server.h)
-list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/SecureServer.h)
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/Config.h)
 list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/Client.h)
-list(APPEND REMOLON_UTIL_HEADERS include/ReMoLON_Util/SecureClient.h)
 
 add_library(remolonutil SHARED
 	${REMOLON_UTIL_HEADERS}

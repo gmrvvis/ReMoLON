@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2019 CCS/UPM - GMRV/URJC.
+ *
+ * Authors: Nadir Román Guerrero <nadir.roman@urjc.es>
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+ 
 #ifndef __REMOLON_FRONTEND_SESSIONTRACKER_H__
 #define __REMOLON_FRONTEND_SESSIONTRACKER_H__
 
@@ -33,10 +53,10 @@ namespace remolonFrontend
     {
     }
 
-  } streamingSessionInfo;
+  } TStreamingSessionInfo;
 
   // Key: session name, Value: session info
-  typedef std::unordered_map < std::string, StreamingSessionInfo > sessionList;
+  typedef std::unordered_map < std::string, TStreamingSessionInfo > sessionList;
 
   enum class SessionCreationResult : unsigned char
   {
@@ -52,7 +72,7 @@ namespace remolonFrontend
 
       SessionCreationResult tryCreateSession ( User & usr_, 
                                                const std::string & sessionName_, 
-                                               StreamingSessionInfo * result_ );
+                                               TStreamingSessionInfo * result_ );
 
       void createSession ( User & user_, const std::string & sessionName_, int status_ );
 
@@ -61,10 +81,10 @@ namespace remolonFrontend
       void finishSession ( User & user_,
                            const std::string & sessionName_ );
 
-      StreamingSessionInfo * getSessionInfo ( User & user_,
+      TStreamingSessionInfo * getSessionInfo ( User & user_,
                                               const std::string & sessionName_ );
 
-      const std::unordered_map < std::string, StreamingSessionInfo > & getUserSessions ( User & user_ );
+      const std::unordered_map < std::string, TStreamingSessionInfo > & getUserSessions ( User & user_ );
 
     private:
       static SessionTracker _INSTANCE;
