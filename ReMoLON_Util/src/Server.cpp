@@ -45,8 +45,8 @@ namespace remolonUtil
 
     initializeSocket ( );
 
-    _selectorWorkers.emplace_back ( std::make_unique< remolonUtil::SelectorThread > ( _packetThreadPool, 
-                                                                                      _packetHandler ) );
+    _selectorWorkers.emplace_back ( std::unique_ptr < SelectorThread > ( new SelectorThread ( _packetThreadPool, 
+                                                                                              _packetHandler ) ) );                                                                                  
 
     if ( blocking_ )
     {
@@ -55,6 +55,7 @@ namespace remolonUtil
     else
     {
       _acceptorThread = std::thread( &SecureServer::acceptLoop, this );
+      _acceptorThread.detach ( );
     }
   }
 
@@ -133,10 +134,6 @@ namespace remolonUtil
         //_serverSocket.get ( )->close ( );
         // SSL connections not finishing using standard close ( ) method
         _serverSocket.get ( )->impl ( )->shutdown ( );
-        if ( !_blocking && _acceptorThread.joinable ( ) )
-        {
-          _acceptorThread.join ( );
-        }
       }
       catch( std::exception & e )
       {
@@ -155,7 +152,7 @@ namespace remolonUtil
   std::unique_ptr < Connection > RawServer::createNewConnection ( const Poco::Net::Socket & socket_ )
   {
     std::unique_ptr < Connection > 
-    newConnection = std::make_unique < RawConnection > ( socket_ );
+    newConnection = std::unique_ptr < RawConnection > ( new RawConnection  ( socket_ ) );
 
     return ( newConnection );
   }
@@ -163,7 +160,7 @@ namespace remolonUtil
   void RawServer::initializeSocket ( )
   {
     Poco::Net::SocketAddress sa ( _bindIPAddress, _bindPort );
-    _serverSocket = std::make_unique < Poco::Net::ServerSocket > ( sa );
+    _serverSocket = std::unique_ptr < Poco::Net::ServerSocket > ( new Poco::Net::ServerSocket ( sa ) );
   }
 
   // =============================================================================================
@@ -182,7 +179,7 @@ namespace remolonUtil
   std::unique_ptr < Connection > SecureServer::createNewConnection ( const Poco::Net::Socket & socket_ )
   {
     std::unique_ptr < Connection > 
-    newConnection = std::make_unique < SecureConnection > ( socket_ );
+    newConnection = std::unique_ptr < SecureConnection > ( new SecureConnection ( socket_ ) );
 
     return ( newConnection );
   }
@@ -207,6 +204,6 @@ namespace remolonUtil
 
     Poco::Net::SocketAddress sa ( _bindIPAddress, _bindPort );
 
-    _serverSocket = std::make_unique < Poco::Net::SecureServerSocket >( sa, 64, context );
+    _serverSocket = std::unique_ptr < Poco::Net::SecureServerSocket > ( new Poco::Net::SecureServerSocket ( sa, 64, context ) );
   }
 }

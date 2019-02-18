@@ -38,6 +38,7 @@ namespace remolonUtil
     _writeBufferHelper.resize ( 8192 );
 
     _worker = std::thread ( &SelectorThread::selectLoop, this );
+    _worker.detach ( );
   }
 
   SelectorThread::~SelectorThread ( )
@@ -238,9 +239,5 @@ namespace remolonUtil
   {
     _active = false;
     _monitor.notify_all ( );
-    if ( _worker.joinable ( ) )
-    {
-      _worker.join ( );
-    }
   }
 }

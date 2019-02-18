@@ -89,9 +89,10 @@ namespace remolon
     // Requested not existing port (shouldn't happen) OR port is in use
     if ( portIt == _usedPorts.end ( ) || portIt->second || sockPort == 0 || rtcPort == 0 )
     {
-      result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
-                                                                                         sessionName_,
-                                                                                         SESSION_LAUNCH_PORT_UNAVAILABLE );
+      result = std::unique_ptr < frontendclientpackets::StartStreamingSessionResult >
+               ( new frontendclientpackets::StartStreamingSessionResult ( ownerName_,
+                                                                          sessionName_,
+                                                                          SESSION_LAUNCH_PORT_UNAVAILABLE ) );
       client->sendPacket ( result );
       std::cout << "Couldnt start session: port in use" << std::endl;                                                                                
       return;
@@ -104,9 +105,10 @@ namespace remolon
     // User has already a session with same name on this node
     if ( sList.find ( sessionName_ ) != sList.end ( ) )
     {
-      result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
-                                                                                         sessionName_,
-                                                                                         SESSION_LAUNCH_DUPLICATE_NAME );
+      result = std::unique_ptr < frontendclientpackets::StartStreamingSessionResult >
+               ( new frontendclientpackets::StartStreamingSessionResult ( ownerName_,
+                                                                          sessionName_,
+                                                                          SESSION_LAUNCH_DUPLICATE_NAME ) );
       client->sendPacket ( result );                                                                                  
       return;
     }
@@ -119,15 +121,17 @@ namespace remolon
 
     if ( session.tryLaunchSession ( ) )
     {
-      result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
-                                                                                         sessionName_,
-                                                                                         SESSION_LAUNCH_OK );
+      result = std::unique_ptr < frontendclientpackets::StartStreamingSessionResult >
+               ( new frontendclientpackets::StartStreamingSessionResult ( ownerName_,
+                                                                          sessionName_,
+                                                                          SESSION_LAUNCH_OK ) );
     }
     else
     {
-      result = std::make_unique < frontendclientpackets::StartStreamingSessionResult > ( ownerName_,
-                                                                                         sessionName_,
-                                                                                         SESSION_LAUNCH_CRASHED );
+      result = std::unique_ptr < frontendclientpackets::StartStreamingSessionResult > 
+               ( new frontendclientpackets::StartStreamingSessionResult ( ownerName_,
+                                                                          sessionName_,
+                                                                          SESSION_LAUNCH_CRASHED ) );
     }
     
     client->sendPacket ( result );
@@ -170,6 +174,20 @@ namespace remolon
     }
 
     sList.erase ( it );
+  }
+
+  void SessionManager::finishAllSessions ( )
+  {
+    std::unique_lock < std::mutex > lock ( _mtx );
+    auto it = _streamSessions.begin ( );
+    for ( ; it != _streamSessions.end ( ); it++ )
+    {
+      auto innerIt = it->second.begin ( );
+      for ( ; innerIt != it->second.end ( ); innerIt++ )
+      {
+        innerIt->second.finishSession ( );
+      }
+    }
   }
 
   StreamingSession * SessionManager::getStreamSession ( const std::string & ownerName_,

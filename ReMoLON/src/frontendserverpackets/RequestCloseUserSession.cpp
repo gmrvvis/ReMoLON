@@ -46,9 +46,10 @@ namespace remolon
       remolonUtil::Client * clnt = Node::getInstance ( ).getFrontendClient ( );
 
       remolonUtil::SendablePacketPtr 
-      closeResult = std::make_unique < frontendclientpackets::CloseSessionResult > ( _userName,
-                                                                                     _sessionName,
-                                                                                     0 );
+      closeResult = std::unique_ptr < frontendclientpackets::CloseSessionResult >
+                    ( new frontendclientpackets::CloseSessionResult  ( _userName,
+                                                                       _sessionName,
+                                                                       0 ) );
       clnt->sendPacket ( closeResult );                                                                            
     }
   }

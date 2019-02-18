@@ -54,6 +54,8 @@ namespace remolon
                            const std::string & sessionName_ );
       void clearSession ( StreamingSession & session );
 
+      void finishAllSessions ( );
+
       StreamingSession * getStreamSession ( const std::string & owernName_,
                                             const std::string & sessionName_ );
 

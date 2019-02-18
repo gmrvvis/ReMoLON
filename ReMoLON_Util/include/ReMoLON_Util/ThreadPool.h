@@ -48,6 +48,7 @@ namespace remolonUtil
       ThreadPool ( )
         : _minPoolSize ( 8 )
         , _maxPoolSize ( 16 )
+        , _currentPoolSize ( 0 )
         , _maxIdleTimeMilis ( 60000 )
         , _maxQueueSize ( 256 )
         , _active ( true )
@@ -62,6 +63,7 @@ namespace remolonUtil
                    long maxQueueSize_ )
         : _minPoolSize ( poolSize_ )
         , _maxPoolSize ( maxPoolSize_ )
+        , _currentPoolSize ( 0 )
         , _maxIdleTimeMilis ( maxIdleTimeMilis_ )
         , _maxQueueSize ( maxQueueSize_ )
         , _active ( true )
@@ -142,12 +144,13 @@ namespace remolonUtil
       void createWorker ( )
       {
         std::unique_lock < std::mutex > lock ( _poolMtx );
-        std::unique_ptr < TWorkerThread > wt = std::make_unique < TWorkerThread > ( );
+        std::unique_ptr < TWorkerThread > wt ( new TWorkerThread ( ) );
         TWorkerThread * wtPtr = wt.get ( );
         wtPtr->_lastActiveTime = currentTimeMillis ( );
         wtPtr->_active = true;
         wtPtr->_terminated = false;
         wtPtr->_t = std::thread ( &ThreadPool::threadLoop, this, wtPtr );
+        wtPtr->_t.detach ( );
         _pool.push_back ( std::move ( wt ) );
         _currentPoolSize++;
       }
@@ -225,7 +228,6 @@ namespace remolonUtil
 
         std::unique_lock < std::mutex > poolLock ( _poolMtx );
         wt_->_terminated = true;
-        poolLock.unlock ( );
       }
 
     private:

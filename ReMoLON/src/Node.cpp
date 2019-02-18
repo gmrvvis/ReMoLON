@@ -53,19 +53,21 @@ namespace remolon
 		std::uint16_t frontendServerPort = clientCfg.getIntProperty ( "frontendServerPort" );
 
 #ifdef REMOLON_NO_SSL_
-    _client = std::make_unique < remolonUtil::RawClient > ( frontendServerAddress,
-                                                            frontendServerPort );
+    _client = std::unique_ptr < remolonUtil::RawClient >
+              ( new remolonUtil::RawClient ( frontendServerAddress,
+                                             frontendServerPort ) );
 #else
 		std::string keyFilePath = clientCfg.getProperty ( "keyFilePath" );
 		std::string certFilePath = clientCfg.getProperty ( "certificateFilePath" );
 		std::string caFilePath = clientCfg.getProperty ( "CAFilePath" );
 
     // Initialize client
-    _client = std::make_unique < remolonUtil::SecureClient > ( frontendServerAddress,
-                                                               frontendServerPort,
-                                                               keyFilePath,
-                                                               certFilePath,
-                                                               caFilePath );
+    _client = std::unique_ptr < remolonUtil::SecureClient > 
+              ( new remolonUtil::SecureClient ( frontendServerAddress,
+                                                frontendServerPort,
+                                                keyFilePath,
+                                                certFilePath,
+                                                caFilePath ) );
 #endif
     remolonUtil::Client * cPtr = _client.get ( );
     cPtr->registerReceivablePacket < frontendserverpackets::RequestNodeInfo > ( );
@@ -77,7 +79,8 @@ namespace remolon
     std::string bindToAddress = clientCfg.getProperty ( "innerServerAddress" );
     std::uint16_t bindToPort = clientCfg.getIntProperty ( "innerServerPort" );
     
-    _server = std::make_unique < remolonUtil::RawServer > ( bindToAddress, bindToPort );
+    _server = std::unique_ptr < remolonUtil::RawServer > ( new remolonUtil::RawServer ( bindToAddress, 
+                                                                                        bindToPort ) );
     remolonUtil::RawServer * sPtr = _server.get ( );
     sPtr->registerReceivablePacket < remotooclientpackets::SessionInfo > ( );
     sPtr->registerReceivablePacket < remotooclientpackets::AllowAddressAnswer > ( );
@@ -128,7 +131,14 @@ namespace remolon
       }
     }
   }
-  
+
+  void Node::shutDown ( )
+  {
+    _client.get ( )->close ( );
+    _server.get ( )->shutDown ( );
+    std::cout << "ReMoLON shut down" << std::endl;
+  }
+
   const std::string & Node::getRemotooBinaryDir ( )
   {
     return _remotooBinDir;

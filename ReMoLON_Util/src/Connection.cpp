@@ -127,13 +127,13 @@ namespace remolonUtil
    : Connection ( )
   {
     Poco::Net::SocketAddress sa ( address_, port_ );
-    _socket = std::make_unique < Poco::Net::StreamSocket > ( sa );
+    _socket = std::unique_ptr < Poco::Net::StreamSocket > ( new Poco::Net::StreamSocket ( sa ) );
   }
 
   RawConnection::RawConnection ( const Poco::Net::Socket & socket_ )
    : Connection ( )
   {
-    _socket = std::make_unique < Poco::Net::StreamSocket > ( socket_ );
+    _socket = std::unique_ptr < Poco::Net::StreamSocket > ( new Poco::Net::StreamSocket ( socket_ ) );
     _socket.get ( )->setReceiveTimeout ( Poco::Timespan ( 0, 10000 ));
   }
 
@@ -164,7 +164,7 @@ namespace remolonUtil
 
     Poco::Net::SocketAddress sa ( address_, port_ );
 
-    _socket = std::make_unique < Poco::Net::SecureStreamSocket > ( sa, context );
+    _socket = std::unique_ptr < Poco::Net::SecureStreamSocket > ( new Poco::Net::SecureStreamSocket ( sa, context ) );
     Poco::Net::SecureStreamSocket * ssock = static_cast< Poco::Net::SecureStreamSocket * > ( _socket.get ( ) );
     ssock->setPeerHostName ( address_ );
     ssock->completeHandshake ( );
@@ -173,7 +173,7 @@ namespace remolonUtil
   SecureConnection::SecureConnection ( const Poco::Net::Socket & socket_ )
    : Connection ( )
   {
-    _socket = std::make_unique < Poco::Net::SecureStreamSocket > ( socket_ );
+    _socket = std::unique_ptr < Poco::Net::SecureStreamSocket > ( new Poco::Net::SecureStreamSocket ( socket_ ) );
     _socket.get ( )->setReceiveTimeout ( Poco::Timespan ( 0, 10000 ));
     Poco::Net::SecureStreamSocket * ssock = static_cast< Poco::Net::SecureStreamSocket * > ( _socket.get ( ) );
     ssock->completeHandshake ( );

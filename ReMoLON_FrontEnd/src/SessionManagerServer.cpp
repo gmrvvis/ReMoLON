@@ -53,16 +53,18 @@ namespace remolonFrontend
 		std::uint16_t bindToPort = cfg.getIntProperty ( "serverPortBind" );
 
 #ifdef REMOLON_NO_SSL_
-		_server = std::make_unique < remolonUtil::RawServer > ( bindToAddress, bindToPort );
+		_server = std::unique_ptr < remolonUtil::RawServer > ( new remolonUtil::RawServer ( bindToAddress, 
+                                                                                        bindToPort ) );
 #else
 		std::string keyFilePath = cfg.getProperty ( "keyFilePath" );
 		std::string certFilePath = cfg.getProperty ( "certificateFilePath" );
 		std::string caFilePath = cfg.getProperty ( "CAFilePath" );
 
-    _server = std::make_unique < remolonUtil::SecureServer > ( bindToAddress, bindToPort,
-																															 keyFilePath,
-																															 certFilePath,
-																															 caFilePath );
+    server = std::unique_ptr < remolonUtil::SecureServer > ( new remolonUtil::SecureServer ( bindToAddress, 
+                                                                                             bindToPort,
+																															                               keyFilePath,
+																															                               certFilePath,
+																															                               caFilePath ) );
 #endif
 		remolonUtil::AbstractServer * srv = _server.get ( );
 		srv->registerReceivablePacket < clientpackets::NodeInfo > ( );

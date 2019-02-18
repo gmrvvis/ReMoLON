@@ -53,7 +53,7 @@ namespace remolonUtil
 
       ReceivablePacketPtr createPacket ( )
       {
-        ReceivablePacketPtr ptr =  std::make_unique < T > ( );
+        ReceivablePacketPtr ptr ( new T ( ) );
         return ptr;
       }
   };
@@ -70,7 +70,7 @@ namespace remolonUtil
       {
         if ( std::is_base_of < ReceivablePacket, T >::value)
         {
-          AbstractPacketFactoryPtr factory = std::make_unique < PacketFactory< T > > ( );
+          AbstractPacketFactoryPtr factory ( new PacketFactory < T > ( ) );
           ReceivablePacketPtr tempPacket = factory.get ( )->createPacket ( );
 
           unsigned int opcode = tempPacket.get ( )->getOpcode ( );
