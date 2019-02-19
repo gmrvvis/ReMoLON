@@ -78,8 +78,8 @@ namespace remolonFrontend
 		char * usr_cstr = userStr.data ( );
 		std::strcpy ( usr_cstr, user_.c_str ( ) );
 
-    std::vector < char > pwdStr ( pwd_.length ( ) + 1 );
-		char * pwd_cstr = pwdStr.data ( );
+    // Allocated here, but pwd_cstr will be released by pam within pam_end
+    char * pwd_cstr = new char [ pwd_.length ( ) + 1 ];
 		std::strcpy ( pwd_cstr, pwd_.c_str ( ) );
 
 		if ( authenticate( "system-auth", usr_cstr, pwd_cstr ) )
