@@ -48,8 +48,8 @@ ReMoToo, easing the procedure for full system usage.
 ## Description
 
 ```bash
-git clone https://gitlab.gmrv.es/n.roman/remolon.git
-mkdir remolon/build && cd remolon/build
+git clone https://github.com/gmrvvis/ReMoLON.git
+mkdir ReMoLON/build && cd ReMoLON/build
 cmake ..
 make
 ```
