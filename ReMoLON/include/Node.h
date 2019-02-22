@@ -39,6 +39,7 @@ namespace remolon
       static Node & getInstance ( );
 
       void initialize ( const std::string & configFilePath_ );
+      void shutDown ( );
 
       remolonUtil::Client * getFrontendClient ( );
       remolonUtil::AbstractServer * getNodeServer ( );

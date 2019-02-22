@@ -43,7 +43,8 @@ namespace remolon
       clnt = Node::getInstance ( ).getFrontendClient ( );
 
       remolonUtil::SendablePacketPtr 
-      nodeInfo = std::make_unique < frontendclientpackets::NodeInfo > ( );
+      nodeInfo = std::unique_ptr < frontendclientpackets::NodeInfo > 
+                 ( new frontendclientpackets::NodeInfo ( ) );
 
       clnt->sendPacket ( nodeInfo );
     }

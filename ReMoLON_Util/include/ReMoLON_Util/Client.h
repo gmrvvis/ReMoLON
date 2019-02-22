@@ -40,7 +40,7 @@ namespace remolonUtil
   {
     public:
       Client ( const std::string & address_, std::uint16_t port_ );
-      ~Client ( );
+      virtual ~Client ( void );
       
       void connect ( );
       void sendPacket ( SendablePacketPtr & sendPacket );
@@ -65,9 +65,9 @@ namespace remolonUtil
     protected:
       virtual void initializeConnection ( ) = 0;
 
+      bool _active;
       std::string _connectAddress;
       uint16_t _connectPort;
-      bool _active;
       ConnectionPtr _connection;
 
     private:

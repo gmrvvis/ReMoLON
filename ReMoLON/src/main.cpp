@@ -18,26 +18,38 @@
  *
  */
  
+#include <signal.h>
 #include <iostream>
-#include <mutex>
-#include <condition_variable>
 
 #include "Node.h"
+#include "SessionManager.h"
 
 #include "frontendclientpackets/NodeInfo.h"
 
-std::mutex m;
-std::condition_variable cv;
+void signalHandler ( int signal )
+{
+  std::cout << "Received sigaction " << signal << std::endl;
+  remolon::SessionManager::getInstance ( ).finishAllSessions ( );
+  remolon::Node::getInstance ( ).shutDown ( );
+}
 
-int main ( int argc, char ** argv )
+//###int main ( int argc, char ** argv )
+int main ( void )
 {
   using namespace remolon;
+
+  struct sigaction sAct;
+  sAct.sa_handler = signalHandler;
+  sigemptyset ( &sAct.sa_mask );
+  sAct.sa_flags = 0;
+  sigaction ( SIGINT , &sAct, 0);
+  sigaction ( SIGQUIT, &sAct, 0);
 
   remolon::Node::getInstance ( ).initialize ( "./remolonClientConfig.cfg" );
 
   remolonUtil::Client * client = remolon::Node::getInstance ( ).getFrontendClient ( );
 
-  remolonUtil::SendablePacketPtr nodeInfo = std::make_unique < frontendclientpackets::NodeInfo > ( );
+  remolonUtil::SendablePacketPtr nodeInfo ( new frontendclientpackets::NodeInfo ( ) );
   client->sendPacket ( nodeInfo );
 
   remolonUtil::AbstractServer * server = remolon::Node::getInstance ( ).getNodeServer ( );

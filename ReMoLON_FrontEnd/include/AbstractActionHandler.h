@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
- 
+
 #ifndef __REMOLON_FRONTEND_ABSTRACTACTIONHANDLER_H__
 #define __REMOLON_FRONTEND_ABSTRACTACTIONHANDLER_H__
 
@@ -32,6 +32,7 @@ namespace remolonFrontend
 	{
 		public:
 			virtual std::string getAction ( ) = 0;
+			virtual ~AbstractActionHandler ( void ) = default;
 			virtual void handleAction ( Poco::Net::HTTPServerRequest & request_, 
                                   Poco::Net::HTTPServerResponse & response_ ) = 0;
 	};

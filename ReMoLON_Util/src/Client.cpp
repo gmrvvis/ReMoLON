@@ -185,7 +185,7 @@ namespace remolonUtil
 
   void RawClient::initializeConnection ( )
   {
-    _connection = std::make_unique < RawConnection > ( _connectAddress, _connectPort );
+    _connection = std::unique_ptr < RawConnection > ( new RawConnection ( _connectAddress, _connectPort ) );
   }
 
   // ==============================================================================================
@@ -203,11 +203,13 @@ namespace remolonUtil
 
   void SecureClient::initializeConnection ( )
   {
-    _connection = std::make_unique < SecureConnection > ( _connectAddress, 
-                                                          _connectPort,
-                                                          _keyFile,
-                                                          _certFile,
-                                                          _caFile );
+
+
+    _connection = std::unique_ptr < SecureConnection > ( new SecureConnection ( _connectAddress, 
+                                                                                _connectPort,
+                                                                                _keyFile,
+                                                                                _certFile,
+                                                                                _caFile ) );
   }
 
   void SecureClient::onConnectionClose ( )

@@ -45,9 +45,13 @@ namespace remolon
       const std::string & getSessionName ( );
       const std::string & getSessionOwner ( );
       const std::string & getSessionOwnerAddress ( );
-      uint16_t getSessionPort ( );
-      uint16_t getSessionSocketPort ( );
-      uint16_t getSessionRTCPort ( );
+//###      uint16_t getSessionPort ( );
+//###      uint16_t getSessionSocketPort ( );
+//###      uint16_t getSessionRTCPort ( );
+      unsigned int getSessionPort ( );
+      unsigned int getSessionSocketPort ( );
+      unsigned int getSessionRTCPort ( );
+
 
       bool tryLaunchSession ( );
       void finishSession ( );
@@ -56,9 +60,12 @@ namespace remolon
       std::string _sessionName;
       std::string _sessionOwner;
       std::string _sessionOwnerAddress;
-      uint16_t _sessionPort;
-      uint16_t _sessionSockPort;
-      uint16_t _sessionRTCPort;
+//###      uint16_t _sessionPort;
+//###      uint16_t _sessionSockPort;
+//###      uint16_t _sessionRTCPort;
+      unsigned int _sessionPort;
+      unsigned int _sessionSockPort;
+      unsigned int _sessionRTCPort;
 
       std::thread _streamingProcess;
 

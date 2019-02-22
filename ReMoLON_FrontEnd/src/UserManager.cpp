@@ -23,6 +23,7 @@
 #include <security/pam_appl.h>
 #include <cstring>
 #include <pwd.h>
+#include <vector>
 
 namespace remolonFrontend
 {
@@ -33,6 +34,10 @@ namespace remolonFrontend
                  struct pam_response ** resp_, 
                  void * appdata_ptr_ ) 
 	{
+    //###
+		(void)msg_;
+		(void)appdata_ptr_;
+		(void)num_msg_;    
 		*resp_ = reply;
 		return PAM_SUCCESS;
 	}
@@ -69,10 +74,12 @@ namespace remolonFrontend
 		std::unique_lock < std::mutex > lock ( _mtx );
 
 		bool result;
-		char * usr_cstr = new char [ user_.length ( ) + 1 ];
+    std::vector < char > userStr ( user_.length ( ) + 1 );
+		char * usr_cstr = userStr.data ( );
 		std::strcpy ( usr_cstr, user_.c_str ( ) );
 
-		char * pwd_cstr = new char [ pwd_.length ( ) + 1 ];
+    // Allocated here, but pwd_cstr will be released by pam within pam_end
+    char * pwd_cstr = new char [ pwd_.length ( ) + 1 ];
 		std::strcpy ( pwd_cstr, pwd_.c_str ( ) );
 
 		if ( authenticate( "system-auth", usr_cstr, pwd_cstr ) )
@@ -97,7 +104,6 @@ namespace remolonFrontend
 			result = false;
 		}
 
-		lock.unlock ( );
 		return result;
 	}
 

@@ -41,11 +41,15 @@ a set of configurations steps are required, and ReMoToo should be present on the
 system in order to access full functionality. As stated above, all the dependencies
 are required to build the software.
 
+As mentioned above, ReMoLON has been designed to work with ReMoToo. Because of this,
+the clonation and compilation of ReMoLON is done automatically when cloning and building
+ReMoToo, easing the procedure for full system usage.
+
 ## Description
 
 ```bash
-git clone -b InitialRelease https://gitlab.gmrv.es/n.roman/remolon.git
-mkdir remolon/build && cd remolon/build
+git clone https://github.com/gmrvvis/ReMoLON.git
+mkdir ReMoLON/build && cd ReMoLON/build
 cmake ..
 make
 ```
@@ -65,6 +69,9 @@ work properly:
       connections (the same as specified in frontendServerConfig.cfg)
     * Configure the Key, Certificate, and Chain of Authority certificate if ReMoLON and
       ReMoLON Frontend are build to use SSL
+    * Configure the location of the binaries used to launch the streaming session: 
+      remolonXinitrcDir, which points to the executable in charge of overwrite the user's 
+      xinitrc file, and remotooBinaryDir, which points to the ReMoToo executable itself
     * The public address which should be accessible by the end users, used to bind the
       streaming web servers of each session.
     * The ports available to ReMoLON on which to launch streaming sessions. The are 3 port

@@ -90,11 +90,14 @@ namespace remolonFrontend
     sessionInfo._status = SessionStatus::SESSION_CREATING;
 
     result_ = &sessionInfo;
-
+    //###
+    (void)result_;
+    
     remolonUtil::SendablePacketPtr 
-    startPacket = std::make_unique < serverpackets::RequestStartStreamingSession > ( user_,
-                                                                                     sessionName_,
-                                                                                     choosenPort );
+    startPacket = std::unique_ptr < serverpackets::RequestStartStreamingSession > 
+                  ( new serverpackets::RequestStartStreamingSession ( user_, 
+                                                                      sessionName_,
+                                                                      choosenPort ) );
 
     node->sendPacket ( startPacket );
 
@@ -133,8 +136,9 @@ namespace remolonFrontend
       else
       {
         remolonUtil::SendablePacketPtr 
-        closeSession = std::make_unique < serverpackets::RequestCloseUserSession > ( user_.getUserName ( ), 
-                                                                                          sessionName_ );
+        closeSession = std::unique_ptr < serverpackets::RequestCloseUserSession >
+                        ( new serverpackets::RequestCloseUserSession ( user_.getUserName ( ),
+                                                                       sessionName_ ) );
         node->sendPacket ( closeSession );
       }
     }

@@ -47,7 +47,7 @@ namespace remolonFrontend
 					return false;
 				}
 
-				AbstractActionHandlerPtr newHandler = std::make_unique < T > ( );
+				AbstractActionHandlerPtr newHandler ( new T ( ) );//= std:: < T > ( );
 				AbstractActionHandler * handlerPtr = newHandler.get ( );
 				_actionHandlers [ handlerPtr->getAction ( ) ] = std::move ( newHandler );
 				return true;

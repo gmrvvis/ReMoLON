@@ -38,6 +38,7 @@ namespace remolonUtil
     _writeBufferHelper.resize ( 8192 );
 
     _worker = std::thread ( &SelectorThread::selectLoop, this );
+    _worker.detach ( );
   }
 
   SelectorThread::~SelectorThread ( )
@@ -149,7 +150,6 @@ namespace remolonUtil
   {
     int total = 0;
     int received;
-    int offset = 0;
 
     // Discard any previous content from another connection
     // TODO: Temporary-auxiliar buffers per client to save split content?
@@ -239,9 +239,5 @@ namespace remolonUtil
   {
     _active = false;
     _monitor.notify_all ( );
-    if ( _worker.joinable ( ) )
-    {
-      _worker.join ( );
-    }
   }
 }

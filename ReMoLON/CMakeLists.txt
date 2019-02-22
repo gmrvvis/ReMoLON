@@ -1,48 +1,74 @@
-list(APPEND REMOLON_SOURCES src/main.cpp)
-list(APPEND REMOLON_SOURCES src/Node.cpp)
-list(APPEND REMOLON_SOURCES src/SessionManager.cpp)
-list(APPEND REMOLON_SOURCES src/StreamingSession.cpp)
-list(APPEND REMOLON_SOURCES src/frontendclientpackets/CloseSessionResult.cpp)
-list(APPEND REMOLON_SOURCES src/frontendclientpackets/NodeInfo.cpp)
-list(APPEND REMOLON_SOURCES src/frontendclientpackets/StartStreamingSessionResult.cpp)
-list(APPEND REMOLON_SOURCES src/frontendserverpackets/RequestNodeInfo.cpp)
-list(APPEND REMOLON_SOURCES src/frontendserverpackets/RequestStartStreamingSession.cpp)
-list(APPEND REMOLON_SOURCES src/frontendserverpackets/RequestCloseUserSession.cpp)
-list(APPEND REMOLON_SOURCES src/remotooclientpackets/AllowAddressAnswer.cpp)
-list(APPEND REMOLON_SOURCES src/remotooclientpackets/SessionInfo.cpp)
-list(APPEND REMOLON_SOURCES src/remotooserverpackets/RequestSessionInfo.cpp)
-list(APPEND REMOLON_SOURCES src/remotooserverpackets/RequestAllowAddress.cpp)
-list(APPEND REMOLON_SOURCES src/remotooserverpackets/RequestFinishSession.cpp)
+#-------------------------------------------------------------------------------
+# ReMoLON
+#
+# Copyright (c) 2019    Rey Juan Carlos University, Spain,
+#                           Modeling, Virtual Reality, and Visualization Group.
+#                       Universidad Politécnica de Madrid, Spain
+#                           Center for Computational Simulation
+#-------------------------------------------------------------------------------
+#                                 License
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#-------------------------------------------------------------------------------
 
-list(APPEND REMOLON_HEADERS include/Node.h)
-list(APPEND REMOLON_HEADERS include/SessionManager.h)
-list(APPEND REMOLON_HEADERS include/SessionManager.h)
-list(APPEND REMOLON_HEADERS include/frontendclientpackets/CloseSessionResult.h)
-list(APPEND REMOLON_HEADERS include/frontendclientpackets/NodeInfo.h)
-list(APPEND REMOLON_HEADERS include/frontendclientpackets/StartStreamingSessionResult.h)
-list(APPEND REMOLON_HEADERS include/frontendserverpackets/RequestNodeInfo.h)
-list(APPEND REMOLON_HEADERS include/frontendserverpackets/RequestStartStreamingSession.h)
-list(APPEND REMOLON_HEADERS include/frontendserverpackets/RequestCloseUserSession.h)
-list(APPEND REMOLON_HEADERS include/remotooclientpackets/AllowAddressAnswer.h)
-list(APPEND REMOLON_HEADERS include/remotooclientpackets/SessionInfo.h)
-list(APPEND REMOLON_HEADERS include/remotooserverpackets/RequestSessionInfo.h)
-list(APPEND REMOLON_HEADERS include/remotooserverpackets/RequestAllowAddress.h)
-list(APPEND REMOLON_HEADERS include/remotooserverpackets/RequestFinishSession.h)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/frontendclientpackets )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/frontendserverpackets )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/remotooclientpackets )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include/remotooserverpackets )
 
-list(APPEND REMOLON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
-list(APPEND REMOLON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/frontendclientpackets)
-list(APPEND REMOLON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/frontendserverpackets)
-list(APPEND REMOLON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/remotooclientpackets)
-list(APPEND REMOLON_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/remotooserverpackets)
-
-include_directories(${REMOLON_INCLUDE_DIRS})
-
-add_executable(remolon
-	${REMOLON_HEADERS}
-  ${REMOLON_SOURCES}
+include_directories( ${PROJECT_SOURCE_DIR}
+                     ${PROJECT_SOURCE_DIR}/ReMoLON_Util/include/
+                     ${PROJECT_BINARY_DIR} )
+                     
+set( REMOLON_SOURCES  src/main.cpp
+                      src/Node.cpp
+                      src/SessionManager.cpp
+                      src/StreamingSession.cpp
+                      src/frontendclientpackets/CloseSessionResult.cpp
+                      src/frontendclientpackets/NodeInfo.cpp
+                      src/frontendclientpackets/StartStreamingSessionResult.cpp
+                      src/frontendserverpackets/RequestNodeInfo.cpp
+                      src/frontendserverpackets/RequestStartStreamingSession.cpp
+                      src/frontendserverpackets/RequestCloseUserSession.cpp
+                      src/remotooclientpackets/AllowAddressAnswer.cpp
+                      src/remotooclientpackets/SessionInfo.cpp
+                      src/remotooserverpackets/RequestSessionInfo.cpp
+                      src/remotooserverpackets/RequestAllowAddress.cpp
+                      src/remotooserverpackets/RequestFinishSession.cpp
 )
 
-target_link_libraries (remolon remolonutil)
+set( REMOLON_PUBLIC_HEADERS include/Node.h
+                            include/SessionManager.h
+                            include/SessionManager.h
+                            include/frontendclientpackets/CloseSessionResult.h
+                            include/frontendclientpackets/NodeInfo.h
+                            include/frontendclientpackets/StartStreamingSessionResult.h
+                            include/frontendserverpackets/RequestNodeInfo.h
+                            include/frontendserverpackets/RequestStartStreamingSession.h
+                            include/frontendserverpackets/RequestCloseUserSession.h
+                            include/remotooclientpackets/AllowAddressAnswer.h
+                            include/remotooclientpackets/SessionInfo.h
+                            include/remotooserverpackets/RequestSessionInfo.h
+                            include/remotooserverpackets/RequestAllowAddress.h
+                            include/remotooserverpackets/RequestFinishSession.h
+)
 
-# copy configuration file to binary directory
-configure_file(${CMAKE_SOURCE_DIR}/remolonClientConfig.cfg ${CMAKE_CURRENT_BINARY_DIR}/remolonClientConfig.cfg COPYONLY)
+set(REMOLON_NAMESPACE remolon)
+set(REMOLON_INCLUDE_NAMES ReMoLON )
+
+set(REMOLON_LINK_LIBRARIES  remolon_util
+                            Threads::Threads)
+
+common_application( remolon )

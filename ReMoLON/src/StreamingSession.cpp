@@ -85,17 +85,20 @@ namespace remolon
     return _sessionOwnerAddress;
   }
 
-  uint16_t StreamingSession::getSessionPort ( )
+  //###uint16_t StreamingSession::getSessionPort ( )
+  unsigned int StreamingSession::getSessionPort ( )
   {
     return _sessionPort;
   }
 
-  uint16_t StreamingSession::getSessionSocketPort ( )
+  //uint16_t StreamingSession::getSessionSocketPort ( )
+  unsigned int StreamingSession::getSessionSocketPort ( )
   {
     return _sessionSockPort;
   }
 
-  uint16_t StreamingSession::getSessionRTCPort ( )
+  //###uint16_t StreamingSession::getSessionRTCPort ( )
+  unsigned int StreamingSession::getSessionRTCPort ( )
   {
     return _sessionRTCPort;
   }
@@ -124,7 +127,7 @@ namespace remolon
 
             std::string xinitrcBin = Node::getInstance ( ).getRemolonXinitrcBinaryDir ( );
             xinitrcBin += xinitrcBin [ xinitrcBin.length ( ) - 1 ] == '/'? "" : "/";
-            xinitrcBin += "remolon_xinit_writter";
+            xinitrcBin += "xinitrc_writer";
 
             const std::string & remolonBin = Node::getInstance ( ).getRemotooBinaryDir ( );
 
@@ -170,7 +173,8 @@ namespace remolon
   void StreamingSession::finishSession ( )
   {
     remolonUtil::SendablePacketPtr 
-    finishPacket = std::make_unique< remotooserverpackets::RequestFinishSession > ( );
+    finishPacket = std::unique_ptr < remotooserverpackets::RequestFinishSession > 
+                   ( new remotooserverpackets::RequestFinishSession ( ) );
     _connection->sendPacket ( finishPacket );
   }
 }

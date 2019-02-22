@@ -43,7 +43,7 @@ namespace remolonUtil
       std::size_t packetBeginsAt = buffer_.getReadPos ( );
 
       char packetOpcode = buffer_.readChar ( );
-      short packetSize = buffer_.readShort ( );
+      unsigned short packetSize = buffer_.readShort ( );
 
       // Cocrrupted size ( packet larger than buffer )
       if ( packetSize > buffer_.getSize ( ) && packetBeginsAt == 0)
@@ -65,8 +65,9 @@ namespace remolonUtil
       AbstractPacketFactory * factory = _packetFactories [ packetOpcode ].get ( );
       if(factory)
       {
-        ReceivablePacketPtr pPtr = factory->createPacket ( );
-        ReceivablePacket * p = pPtr.get ( );
+        //### Shadowing
+        ReceivablePacketPtr pPtr2 = factory->createPacket ( );
+        ReceivablePacket * p = pPtr2.get ( );
 
         p->setBuffer ( &buffer_ );
         p->setConnection ( &con_ );
@@ -74,15 +75,16 @@ namespace remolonUtil
         // Read raw data into packet class fields ( programmer-defined )
         p->readImpl ( );
 
-        return pPtr;
+        return pPtr2;
       }
       else
       {
-
         std::string msg = "unknown packet with opcode " + std::to_string ( packetOpcode ) + " from " + con_.clientAddress ( );
         throw std::runtime_error ( msg.c_str ( ) );
         return nullptr;
       }
     }
+    //###
+    return nullptr;
   }
 }
