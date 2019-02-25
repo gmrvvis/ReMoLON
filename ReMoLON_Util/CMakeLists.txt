@@ -50,12 +50,11 @@ set( REMOLON_UTIL_PUBLIC_HEADERS  include/ReMoLON_Util/ByteBuffer.h
 set(REMOLON_UTIL_NAMESPACE remolon_util)
 set(REMOLON_UTIL_INCLUDE_NAMES ReMoLON_Util )
 
-set(REMOLON_UTIL_LINK_LIBRARIES PocoUtil
-                                PocoNetSSL
-                                PocoCrypto
-                                PocoNet
-                                PocoFoundation
+set(REMOLON_UTIL_LINK_LIBRARIES ${Poco_Util_LIBRARY}
+                                ${Poco_NetSSL_LIBRARY}
+                                ${Poco_Crypto_LIBRARY}
+                                ${Poco_Net_LIBRARY}
+                                ${Poco_Foundation_LIBRARY}
 )
 
 common_library(remolon_util)
-

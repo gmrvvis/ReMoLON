@@ -85,11 +85,11 @@ set(REMOLON_FRONTEND_NAMESPACE ReMoLONFrontEnd)
 set(REMOLON_FRONTEND_INCLUDE_NAMES ReMoLONFrontEnd )
 
 set(REMOLON_FRONTEND_LINK_LIBRARIES remolon_util
-                                    PocoUtil
-                                    PocoNetSSL
-                                    PocoCrypto
-                                    PocoNet
-                                    PocoFoundation
+                                    ${Poco_Util_LIBRARY}
+                                    ${Poco_NetSSL_LIBRARY}
+                                    ${Poco_Crypto_LIBRARY}
+                                    ${Poco_Net_LIBRARY}
+                                    ${Poco_Foundation_LIBRARY}
                                     ${PAM_LIBRARY}
                                     )
 
