@@ -35,16 +35,16 @@ set( REMOLON_UTIL_SOURCES   src/ByteBuffer.cpp
                             src/Client.cpp
 )
 
-set( REMOLON_UTIL_PUBLIC_HEADERS  include/ReMoLON_Util/ByteBuffer.h
-                                  include/ReMoLON_Util/Connection.h
-                                  include/ReMoLON_Util/Packet.h
-                                  include/ReMoLON_Util/PacketHandler.h
-                                  include/ReMoLON_Util/Runnable.h
-                                  include/ReMoLON_Util/SelectorThread.h
-                                  include/ReMoLON_Util/ThreadPool.h
-                                  include/ReMoLON_Util/Server.h
-                                  include/ReMoLON_Util/Config.h
-                                  include/ReMoLON_Util/Client.h
+set( REMOLON_UTIL_PUBLIC_HEADERS  ByteBuffer.h
+                                  Connection.h
+                                  Packet.h
+                                  PacketHandler.h
+                                  Runnable.h
+                                  SelectorThread.h
+                                  ThreadPool.h
+                                  Server.h
+                                  Config.h
+                                  Client.h
 )
 
 set(REMOLON_UTIL_NAMESPACE remolon_util)
