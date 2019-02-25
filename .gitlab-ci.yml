@@ -1,0 +1,15 @@
+stages:
+ - build
+
+Ubuntu:
+ stage: build
+ script:
+  - date
+  - hostname
+  - uname -a
+  - module load poco-1.8.1
+  - export BUILD_GENERATOR="Ninja"
+  - export CMAKE_EXTRA_ARGS="-DCMAKE_PREFIX_PATH=$POCO_DIR"
+  - bash .gitlab-ci.sh
+ tags:
+  - ubuntu
